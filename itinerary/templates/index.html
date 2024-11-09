@@ -1,0 +1,502 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Voyage Verse</title>
+    <style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+/* Header Styles */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+header h1 {
+    color: white;
+    font-size: 1.5rem;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+nav a:hover {
+    color: #6E2AF5;
+}
+/* Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+.hero-title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+/* Button Styles */
+.cta-button, .get-button {
+    padding: 1rem 2rem;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.get-button {
+    background-color: #090a0f;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+.get-button:hover {
+    background-color: #555;
+}
+.get-button .button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.get-button .button-content i {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+.get-button:hover .button-content i {
+    transform: translateX(5px);
+}
+/* Space Section Styles */
+.space-section {
+    position: relative;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
+    overflow: hidden;
+}
+#space-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+/* About Section Styles */
+.space-content {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 2rem;
+    color: white;
+    text-align: center;
+}
+.about-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.about-column {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    flex: 1;
+    min-width: 280px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+}
+.about-column:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 30px 15px rgba(255, 255, 255, 0.5);
+}
+.about-column h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+.about-column p,
+.about-column ul {
+    font-size: 20px;
+    line-height: 2;
+    margin: 0;
+}
+.about-column ul {
+    padding-left: 20px;
+}
+.about-column ul li {
+    margin-bottom: 10px;
+}
+/* Contact Section Styles */
+.contact-section {
+    padding: 4rem 2rem;
+    background-color: #1b2735;
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+.contact-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.contact-info {
+    flex: 1 1 45%;
+    text-align: left;
+    font-size: 1.2rem;
+}
+.contact-info p {
+    margin-bottom: 1rem;
+}
+.contact-info h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+.social-icons {
+    margin-top: 2rem;
+}
+.social-icons a {
+    color: white;
+    font-size: 1.5rem;
+    margin-right: 1.5rem;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+.social-icons a:hover {
+    color: #6E2AF5;
+}
+/* Contact Form Styles */
+.contact-form {
+    flex: 1 1 45%;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+.contact-form h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+}
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+.contact-form button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: white;
+    color: #1b2735;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.contact-form button:hover {
+    background-color: #eee;
+}
+/* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Voyage Verse</h1>
+        <nav>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'signup' %}">Signup</a>
+            {% endif %}
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero-section" id="home">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="{% static 'video/video.mp4' %}" type="video/mp4">
+        </video>
+        <div class="hero-overlay">
+            <h1 class="hero-title">Welcome to Voyage Verse</h1>
+            <p class="hero-subtitle">Your ultimate destination for Travel query.</p>
+            <button class="button get-button" onclick="window.location.href='{% url 'login' %}'">
+                <span class="button-content">Get started <i class="fas fa-arrow-right"></i></span>
+            </button>
+        </div>
+    </section>
+
+    <section class="space-section" id="about">
+        <canvas id="space-canvas"></canvas>
+        <div class="space-content">
+            <div class="about-container">
+                <div class="about-column">
+                    <h1>About Us</h1>
+                    <p>Welcome to Voyage Verse. At Voyage Verse, our mission is to revolutionize the way you experience travel. We're passionate about crafting personalized, memorable journeys that align perfectly with your interests and preferences.</p>
+                    <h1>Our Vision</h1>
+                    <p>We believe that every journey should be unique and tailored to your desires. Our vision is to provide travelers with an intelligent, intuitive tool that makes planning effortless and enjoyable.</p>
+                </div>
+                <div class="about-column">
+                    <h1>What We Offer</h1>
+                    <ul>
+                        <li><strong>Personalized Itineraries:</strong> Our platform uses AI to generate travel itineraries based on your preferences.</li>
+                        <li><strong>Smart Recommendations:</strong> Discover top attractions, dining, and accommodations with our intelligent engine.</li>
+                        <li><strong>Local Insights:</strong> Explore detailed information about your destination, including local tips and hidden gems.</li>
+                        <li><strong>Seamless Integration:</strong> Plan your trip effortlessly with our integrated services.</li>
+                    </ul>
+                </div>
+                <div class="about-column">
+                    <h1>How It Works?</h1>
+                    <p>Input your preferences, generate your itinerary, explore recommendations, and stay informed with real-time updates.</p>
+                    <h1>Join Us on This Journey</h1>
+                    <p>Whether you're planning a weekend getaway or a grand adventure, Voyage Verse is here to guide you every step of the way. Explore new destinations, discover hidden gems, and create unforgettable memories with our innovative travel planning tool.
+                    <br><br>
+                    Thank you for choosing us as your travel companion. We look forward to helping you make your next trip extraordinary!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <div class="contact-info">
+                <h2>Contact Us</h2>
+                <p>Address: 123 Main Street, City, Country</p>
+                <p>Email: contact@voyageverse.com</p>
+                <p>Phone: +1 234 567 890</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="contact-form">
+                <h2>Send a Message</h2>
+                <form action="#">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; Voyage Verse - 2024</p>
+    </footer>
+<script>
+    const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        const mouse = { x: null, y: null, radius: 80 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = (Math.random() - 0.5) * 2;
+            }
+
+            draw() {
+                ctx.fillStyle = "rgba(255,255,255,0.8)";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (mouse.x && mouse.y && dist < mouse.radius) {
+                    const force = (mouse.radius - dist) / mouse.radius;
+                    const directionX = dx / dist;
+                    const directionY = dy / dist;
+                    this.x -= directionX * force * 2;
+                    this.y -= directionY * force * 2;
+                }
+
+                this.draw();
+            }
+        }
+
+        function init() {
+            resizeCanvas();
+            particles.length = 0;
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (mouse.x && mouse.y) {
+                ctx.beginPath();
+                const gradient = ctx.createRadialGradient(
+                    mouse.x, mouse.y, 0,
+                    mouse.x, mouse.y, mouse.radius
+                );
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = gradient;
+                ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            particles.forEach(particle => particle.update());
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', init);
+        window.addEventListener('scroll', () => {
+            const spaceSection = document.querySelector('.space-section');
+            const spaceBounds = spaceSection.getBoundingClientRect();
+            const scrollProgress = (window.innerHeight - spaceBounds.top) / window.innerHeight;
+            
+            if (scrollProgress > 0 && scrollProgress <= 1) {
+                canvas.style.opacity = scrollProgress;
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const spaceSection = document.querySelector('.space-section');
+            const spaceBounds = spaceSection.getBoundingClientRect();
+            
+            if (e.clientY >= spaceBounds.top && e.clientY <= spaceBounds.bottom) {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY - spaceBounds.top;
+            } else {
+                mouse.x = null;
+                mouse.y = null;
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+document.querySelector('.space-section').addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+// Handle window blur/focus events
+window.addEventListener('blur', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+// Initialize and start animation
+init();
+animate();
+function redirectToLoginPage() {
+    window.location.href = 'login.html'; // Update with the correct URL
+}
+</script>
+</body>
+</html>

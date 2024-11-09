@@ -1,0 +1,755 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-top: 80px;
+    background: radial-gradient(ellipse at top, #1b2735 0%, #090a0f 100%);;
+    color: #f5f5f5;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    /* Modal default (light mode) styles */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); /* Transparent black background */
+    }
+    
+    .modal-content {
+        background-color: #fff;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 400px;
+        border-radius: 8px;
+        text-align: center;
+        color: #333; /* Text color in light mode */
+    }
+    
+    .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close-btn:hover,
+    .close-btn:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    .confirm-btn {
+        background-color: #00C1D4;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+    
+    .confirm-btn:hover {
+        background-color: #00a0b2;
+    }
+    
+    /* Modal dark mode styles */
+    .modal.dark-mode .modal-content {
+        background-color: #333;  /* Dark background for modal content */
+        color: #fff;             /* White text color for dark mode */
+        border: 1px solid #555;  /* Border color for dark mode */
+    }
+    
+    .modal.dark-mode .close-btn {
+        color: #fff;             /* White close button in dark mode */
+    }
+    
+    .modal.dark-mode .confirm-btn {
+        background-color: #00C1D4;  /* Darker button background in dark mode */
+    }
+    
+    .modal.dark-mode .confirm-btn:hover {
+        background-color: #00C1D4;  /* Button hover state in dark mode */
+    }
+    
+    /* Hide chat interface by default */
+    .hidden {
+        display: none;
+    }
+    /* Chatbot button styles */
+    #chatbot-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: transparent; /* No background */
+        border: none; /* No border */
+        cursor: pointer;
+        z-index: 1000;
+        width: 80px; /* Increase width to enlarge the GIF */
+        height: 80px; /* Increase height to enlarge the GIF */
+        padding: 0; /* Remove padding */
+    }
+    
+    /* Styling the chatbot GIF */
+    .chatbot-gif {
+        width: 100%; /* GIF takes up full button size */
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 50%; /* Optional: Make GIF circular */
+    }
+    
+    /* Chat interface styles (Light Mode) */
+    #chat-interface {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 300px;
+        height: 400px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        z-index: 1000;
+        overflow: hidden;
+        display: none; /* Start hidden */
+    }
+    
+    #chat-header {
+        background-color: #00C1D4;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+    }
+    
+    #chat-messages {
+        height: 300px;
+        overflow-y: auto;
+        padding: 10px;
+        background-color: white;
+        color: #333;
+    }
+    
+    #chat-input {
+        display: flex;
+        padding: 10px;
+        background-color: #f4f4f4;
+    }
+    
+    #chat-input input {
+        flex-grow: 1;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        background-color: white;
+        color: #333;
+    }
+    
+    #chat-input button {
+        background-color: #00C1D4;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        margin-left: 5px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    
+    
+    /* Chat interface styles (Dark Mode) */
+    #chat-interface.dark-mode {
+        background-color: #333;
+        border: 1px solid #555;
+    }
+    
+    #chat-header.dark-mode {
+        background-color: #555;
+        color: #fff;
+    }
+    
+    #chat-messages.dark-mode {
+        background-color: #444;
+        color: white;
+    }
+    
+    #chat-input.dark-mode {
+        background-color: #555;
+    }
+    
+    #chat-input input.dark-mode {
+        background-color: #444;
+        color: white;
+        border: 1px solid #666;
+    }
+    
+    #chat-input button.dark-mode {
+        background-color: #00C1D4;
+        color: white;
+    }
+    
+    /* Scroll bar styling for chat messages */
+    #chat-messages {
+        scrollbar-width: thin;
+        scrollbar-color: #00C1D4 #f4f4f4;
+    }
+    
+    #chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    #chat-messages::-webkit-scrollbar-thumb {
+        background-color: #00C1D4;
+        border-radius: 10px;
+    }
+    
+    #chat-messages::-webkit-scrollbar-track {
+        background-color: #f4f4f4;
+    }
+    .ai-guide-image {
+        width: 50px; /* Set the width as desired */
+        height: auto; /* Maintain aspect ratio */
+        vertical-align: middle; /* Align with text */
+    }
+    /* Portfolio Section */
+    #portfolio {
+        padding: 50px 0;
+        background-color: #333;
+        color: #e1e1e1; /* Default text color */
+    }
+    
+    .dark-mode #portfolio {
+        background-color: #f4f4f4; /* Background for dark mode */
+        color: #333; /* Change text color for dark mode */
+    }
+    
+    /* Update container style */
+    .container {
+        max-width: 100%; /* Use percentage for max-width */
+        margin: 0 auto; /* Center the container */
+        padding: 0 20px; /* Add some padding for small screens */
+        text-align: center; /* Center text inside the container */
+    }
+    
+    /* Flex container for portfolio items */
+    .work-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: space-between;
+    }
+    
+    /* Ensure consistent size for portfolio items */
+    .work {
+        width: calc(33.333% - 20px);
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: rgba(27, 39, 53, 0.8);
+    }
+    
+    /* Maintain consistent image size and aspect ratio */
+    .work img {
+        width: 100%;
+        height: 250px; /* Set fixed height for consistency */
+        object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
+        display: block;
+        transition: transform 0.5s;
+    }
+    
+    /* Hover effect for image */
+    .work:hover img {
+        transform: scale(1.1);
+    }
+    
+    /* Layer Overlay on Hover */
+    .layer {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        color: #fff; /* Keep this white for overlay text */
+    }
+    
+    /* Show Overlay on Hover */
+    .work:hover .layer {
+        opacity: 1;
+    }
+    
+    /* Hover effect for the work item */
+    .work:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Text alignment inside the overlay */
+    .layer h2 {
+        font-size: 18px;
+        color: #fff; /* Overlay text color */
+        margin-bottom: 10px;
+    }
+    
+    .layer a {
+        color: #ff004f; /* Link color */
+        text-decoration: none;
+        background: #fff;
+        font-size: 18px;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+    
+    /* Hover effect for links */
+    .layer a:hover {
+        background-color: #ff004f;
+        color: #fff;
+    }
+    
+    /* Button Style */
+    .buttn {
+        display: block;
+        margin: 50px auto;
+        width: fit-content;
+        border: 1px solid #ff004f;
+        padding: 14px 50px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #fff; /* Button text color */
+        transition: 0.5s;
+    }
+    
+    .buttn:hover {
+        background: #ff004f;
+    }
+    
+    .information {
+        text-align: center; /* Center the text */
+        padding-left: 20px;
+    }
+    .main-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.8); /* Further reduced padding for a shorter height */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .main-header nav {
+        display: flex;
+        align-items: center;
+        margin-left: auto; /* Add this line to push the nav to the right */
+    }
+    
+    .main-header nav a {
+        color: white;
+        text-decoration: none;
+        margin-left: 2rem;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .main-header nav a:hover {
+        color: #6E2AF5;
+    }
+    
+
+    /* Nav Icons and Profile Container */
+    .nav-icons {
+        display: flex;
+        align-items: center;
+        margin-left: 2rem;
+        color: white;
+    }
+    
+    .icon-bell {
+        font-size: 20px;
+        margin-right: 20px;
+        cursor: pointer;
+    }
+    
+    .profile-container {
+        position: relative;
+    }
+    
+    .profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.9);
+        color: #f5f5f5;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: 250px;
+        z-index: 1000;
+    }
+    
+    .profile-summary {
+        text-align: center;
+        padding: 10px;
+    }
+    
+    .profile-pic-large {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+    
+    .dropdown-menu hr {
+        margin: 10px 0;
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .dropdown-menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .dropdown-menu ul li a {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 14px;
+        margin: 0;
+    }
+    
+    .dropdown-menu ul li a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #6E2AF5;
+    }
+    
+    .dropdown-menu ul li a i {
+        margin-right: 10px;
+        font-size: 16px;
+    }
+    
+    .upload-btn {
+        display: block;
+        padding: 10px;
+        text-align: center;
+        background-color: #6E2AF5;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px;
+    }
+    
+    #profile-details {
+        padding: 10px;
+    }
+    
+    .close-btn {
+        float: right;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #fff;
+    }
+    
+    .user-details {
+        margin-top: 10px;
+    }
+    
+    .user-details p {
+        margin: 5px 0;
+    }
+    
+
+
+/* Why Choose Us Section Styles */
+.why-choose-us {
+    padding: 50px;
+    text-align: center;
+    color: #f4f4f4;
+    margin-top: 20px;
+}
+
+.why-choose-us h2 {
+    font-size: 28px;
+    color: #e1e1e1;
+    margin-bottom: 30px;
+}
+
+.features-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.feature {
+    background-color: rgba(27, 39, 53, 0.8); /* Slightly transparent version of the gradient start color */
+    padding: 20px;
+    width: 45%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.feature h3 {
+    font-size: 20px;
+    color: #00C1D4;
+    margin-bottom: 10px;
+}
+
+.feature p {
+    font-size: 16px;
+    color: #ddd;
+    line-height: 1.6;
+}
+
+.feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Portfolio Section Styles */
+.portfolio {
+    color: #e1e1e1;
+    background: transparent !important;
+    padding: 50px;
+}
+#portfolio {
+    background: transparent !important;
+    padding: 50px 0;
+    color: #e1e1e1;
+}
+.portfolio h2 {
+    color: #e1e1e1;
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+}
+
+.portfolio a {
+    color: #fff;
+    text-align: center;
+    display: block;
+}
+
+.portfolio a:hover {
+    color: #333;
+}
+
+.portfolio-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    background: transparent;
+}
+
+.portfolio-item {
+    width: 30%;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.portfolio-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.portfolio-item:hover::after {
+    opacity: 1;
+}
+
+.portfolio-item img {
+    width: 100%;
+    display: block;
+}
+
+.image-overlay {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.portfolio-item:hover .overlay-content {
+    opacity: 1;
+}
+
+.portfolio-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.testimonials {
+    padding: 50px 100px;
+    text-align: center;
+}
+
+.testimonials h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.testimonials p {
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.testimonial-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.testimonial-card {
+    background-color: #fff;
+    color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.review-text {
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+.reviewer {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.testimonials {
+    background: transparent;
+}
+/* General smooth transition for all elements */
+* {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide in from the top */
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply the fadeIn animation to different sections */
+.top-nav {
+    animation: slideIn 1s ease forwards;
+}
+
+.search-bar, .why-choose-us, .portfolio, .testimonials {
+    animation: fadeIn 1.5s ease forwards;
+    opacity: 0;
+}
+
+.search-bar {
+    animation-delay: 0.3s;
+}
+
+.why-choose-us {
+    animation-delay: 0.6s;
+}
+
+.portfolio {
+    animation-delay: 0.9s;
+}
+
+.testimonials {
+    animation-delay: 1.2s;
+}

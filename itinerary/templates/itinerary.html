@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itinerary Generator</title>
+</head>
+<body>
+    <h1>Itinerary Generator</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="location_name">Location Name:</label>
+        <input type="text" id="location_name" name="location_name" required>
+        
+        <label for="days">Number of Days:</label>
+        <input type="number" id="days" name="days" required>
+        
+        <button type="submit">Generate Itinerary</button>
+    </form>
+
+    {% if itinerary %}
+        <h2>Itinerary for {{ place_name }}</h2>
+        <pre>{{ itinerary }}</pre>
+
+        <h3>Latest News</h3>
+        <ul>
+            {% for item in news_items %}
+                <li>
+                    <strong>{{ item.title }}</strong> - {{ item.publishedAt }}<br>
+                    <em>{{ item.description }}</em><br>
+                    <a href="{{ item.url }}">Read more</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if error %}
+        <p style="color:red;">Error: {{ error }}</p>
+    {% endif %}
+</body>
+</html>

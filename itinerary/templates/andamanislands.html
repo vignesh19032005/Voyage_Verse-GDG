@@ -1,0 +1,725 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andaman Islands Itinerary</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+         body.night-mode {
+            background: radial-gradient(ellipse at top, #1b2735 0%, #090a0f 100%);;
+            color: #f5f5f5;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px;
+}
+
+.left-section {
+    flex: 2; /* More space for the itinerary and image */
+    display: flex;
+    flex-direction: column;
+}
+
+.right-section {
+    flex: 1; /* Less space for the map */
+}
+
+#map { 
+    height: 500px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px; /* Ensures gap between map and buttons */
+}
+
+a.buttn {
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none; /* Remove underline */
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+a.buttn:hover {
+    background-color: #444;
+}
+
+.buttons-container {
+    display: flex; /* Use flexbox to align items */
+    justify-content: center; /* Center the buttons */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px; /* Space above the buttons (if needed) */
+}
+
+.photo {
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.details {
+    margin-top: 20px;
+}
+
+.details h2, .details p {
+    margin-bottom: 10px;
+}
+
+.scroll-box {
+    max-height: 300px;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+
+/* Style for numbered markers */
+.leaflet-div-icon {
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 24px;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.tab-titles {
+    display: flex;
+    margin: 20px 0 40px;
+    transition: transform 0.5s;   
+}
+
+.tab-links {
+    margin-right: 50px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    transition: transform 0.5s;
+}
+
+.tab-links:hover {
+    color:#E1D14E;
+    transform: translateY(-5px);
+}
+
+.tab-links::after {
+    content: '';
+    width:0;
+    height: 3px;
+    color:#E1D14E;
+    background: #ff004f;
+    position:absolute;
+    left: 0;
+    bottom: -8px;
+    transition: 0.5s;
+}
+
+.tab-links.active-link::after {
+    width: 100%;
+}
+.tab-contents {
+    display: none;
+}
+
+.tab-contents.active-tab {
+    display: block;
+}
+/* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+    </style>
+</head>
+
+<body class="night-mode">
+    <div class="container">
+        <!-- Left section for photo and itinerary -->
+        <div class="left-section">
+            <h1>Andaman Islands Itinerary</h1>
+
+            <img src="{% static 'video/andhaman.jpg' %}" alt="Golden Temple" class="photo">
+
+            <!-- Scrollable itinerary section -->
+            <div class="about-col-2">
+                <div class="tab-titles">
+                    <p class="tab-links active-link" onclick="opentab(event, 'onedays'),oneday()">ONE DAY Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'threedays')">THREE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'fivedays')">FIVE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'sevendays')">SEVEN DAYS Itinerary</p>
+                </div>
+                <div class="tab-contents active-tab" id="onedays">
+                    <div class="scroll-box"> 
+                        <div class="details">
+                            <h2>Day 1 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a scrumptious breakfast at <em>Bharat Bhagya Restaurant</em>. Savor local dishes like idli, dosa, or pancakes with chutney.</p>
+                            <p><strong>10:00 AM:</strong> Visit the historic <em>Cellular Jail</em>, a symbol of India's freedom struggle. Witness the sound and light show in the evening.</p>
+                            <p><strong>1:00 PM:</strong> Indulge in a delightful lunch at <em>The Brown Tree Snake Restaurant</em>. Try authentic Andamanese dishes such as fish curry, crab xacuti, and rice.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Chatham Saw Mill</em>, the largest sawmill in Asia, and discover the mangrove forests while observing the wood processing.</p>
+                            <p><strong>4:00 PM:</strong> Relax at <em>Kala Pathar Beach</em> and enjoy the stunning sunset views.</p>
+                            <p><strong>7:00 PM:</strong> End your day with an exquisite dinner at <em>The Dining Room</em> at The Park, offering international cuisine and fresh seafood.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="threedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'threedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'threedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'threedays')">Day 3</p>
+                    </div>
+                    <div class="scroll-box">
+                        <div class="details" id="day1-threedays">
+                            <h2>Day 1 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Bharat Bhavan Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit the historic <em>Cellular Jail</em> and Museum (entry at 10:30 AM).</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Café Deltamine</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>Chatham Saw Mill</em> and Mangrove Forest.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>Bamboo Flute Restaurant</em>.</p>
+                        </div>
+                        <div class="details" id="day2-threedays" style="display: none;">
+                            <h2>Day 2 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with breakfast at <em>Dhanraj Bhagat Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Travel to <em>Havelock Island</em> by ferry, arriving around noon.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Grand Haveli Resort & Spa</em>.</p>
+                            <p><strong>2:30 PM:</strong> Visit <em>Radhanagar Beach</em> and relax or participate in water activities.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>The Blue Water Restaurant</em>.</p>
+                        </div>
+                        <div class="details" id="day3-threedays" style="display: none;">
+                            <h2>Day 3 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Sagar Ratna Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Journey to <em>Neil Island</em> by ferry, arriving around noon.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Sea Shell Resort & Spa</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Sitapur Beach</em> and enjoy snorkeling.</p>
+                            <p><strong>7:00 PM:</strong> End your day with dinner at <em>Panchavati Guest House Restaurant</em>.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="fivedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'fivedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'fivedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'fivedays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'fivedays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'fivedays')">Day 5</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-fivedays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Bharat Bhavan Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit the historic <em>Cellular Jail</em> and Museum.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Café Delfini</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Rajiv Gandhi National IT Park</em> and <em>Chirpai Reef</em>.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>The Big Yellow Tree</em>.</p>
+                        </div>
+                        <div class="details" id="day2-fivedays" style="display: none;"> <!-- Hide other days by default -->
+                            <h2>Day 2 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with breakfast at <em>Dil Se Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Mahatma Gandhi Marine National Park</em> and enjoy snorkeling.</p>
+                            <p><strong>1:00 PM:</strong> Savor lunch at <em>Bon Vivant</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Wandoor Beach</em> and Lighthouse.</p>
+                            <p><strong>7:00 PM:</strong> Experience dinner at <em>Spice Garden</em>.</p>
+                        </div>
+                        <div class="details" id="day3-fivedays" style="display: none;">
+                            <h2>Day 3 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with breakfast at <em>Sea Shell Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Radhanagar Beach</em> and participate in water activities.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Rasoi</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Kala Pathar Beach</em> and enjoy sunset views.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>Fish Land</em>.</p>
+                        </div>
+                        <div class="details" id="day4-fivedays" style="display: none;">
+                            <h2>Day 4 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with breakfast at <em>Sagar Ratna</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Baratang Island</em> and explore the Limestone Caves.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Boat House</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Diglipur</em> and visit <em>Ross and Smith Islands</em>.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>Aam Prasad</em>.</p>
+                        </div>
+                        <div class="details" id="day5-fivedays" style="display: none;">
+                            <h2>Day 5 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with breakfast at <em>Trikut Villa</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>North Bay Island</em> and enjoy a glass-bottom boat ride.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>The Green Room</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Aberdeen Bazaar</em> for shopping.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>The Dining Room</em> at <em>Symphony Palms Resort</em>.</p>
+                        </div>
+                    </div>
+                </div>                
+                <div class="tab-contents" id="sevendays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'sevendays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'sevendays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'sevendays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'sevendays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'sevendays')">Day 5</p>
+                        <p class="tab-links" onclick="openday(event, 'day6', 'sevendays')">Day 6</p>
+                        <p class="tab-links" onclick="openday(event, 'day7', 'sevendays')">Day 7</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-sevendays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Begin with a hearty breakfast at <em>Bharat Bhawan Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Cellular Jail</em> and Museum.</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional lunch at <em>Kaala Pathar Restaurant</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Chatham Saw Mill</em> and <em>Aberdeen Clock Tower</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>Indigo Restaurant & Bar</em>.</p>
+                        </div>
+                        <div class="details" id="day2-sevendays" style="display: none;">
+                            <h2>Day 2 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Sunset Point Beach Resort</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Mahatma Gandhi Marine National Park</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Fisherman's Cove</em>.</p>
+                            <p><strong>2:30 PM:</strong> Enjoy snorkeling or scuba diving at <em>Rutland Island</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Bougainvillea Restaurant</em>.</p>
+                        </div>
+                        <div class="details" id="day3-sevendays" style="display: none;">
+                            <h2>Day 3 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Merlin Sarovar Portico</em>.</p>
+                            <p><strong>10:00 AM:</strong> Excursion to <em>North Bay</em> (Jolly Buoy Island).</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Dugupudi Beach</em>.</p>
+                            <p><strong>2:30 PM:</strong> Relax at <em>Wandoor Beach</em> or explore <em>Viper Island</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Sea Shell Restaurant</em>.</p>
+                        </div>
+                        <div class="details" id="day4-sevendays" style="display: none;">
+                            <h2>Day 4 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Sagar Holiday Home</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Radhanagar Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Bharat Holidays</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Karmatang Beach</em> or <em>Laxmanpur Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Coral Reef Resort</em>.</p>
+                        </div>
+                        <div class="details" id="day5-sevendays" style="display: none;">
+                            <h2>Day 5 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Green Ocean Resort</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Long Island</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Blue Water Café</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Little Andaman Island</em> or <em>Hut Bay</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Murugan Idli Shop</em>.</p>
+                        </div>
+                        <div class="details" id="day6-sevendays" style="display: none;">
+                            <h2>Day 6 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Pristine Beach Resort</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Ross Island</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Ananda Restaurant</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Lamkulat Beach</em> or <em>Mount Harriet</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Tamarind Palm</em>.</p>
+                        </div>
+                        <div class="details" id="day7-sevendays" style="display: none;">
+                            <h2>Day 7 in Andaman Islands:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Sea Shell Resort and Spa</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Kala Patthar Beach</em> or <em>Shyam Nagar Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Beach No. 7</em>.</p>
+                            <p><strong>2:30 PM:</strong> Shopping at <em>Aberdeen Bazaar</em> or explore <em>Port Blair Market</em>.</p>
+                            <p><strong>7:00 PM:</strong> Farewell dinner at <em>The Palms</em>.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+        <!-- Right section for map -->
+        <div class="right-section">
+            <div id="map"></div>
+            
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>&copy; Voyage Verse - 2024</p>
+    </footer>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+
+    <script>
+// Global variable to store the current map instance
+let currentMap;
+let darkModeLayer;
+let lightModeLayer;
+
+// Night Mode Toggle
+function toggleNightMode() {
+    const body = document.body;
+    const modeIcon = document.getElementById('modeIcon');
+    
+    // Toggle between day and night modes
+    body.classList.toggle('day-mode');
+    body.classList.toggle('night-mode');
+    
+    // Switch the map layers
+    if (body.classList.contains('day-mode')) {
+        map.removeLayer(darkModeLayer);
+        map.addLayer(lightModeLayer);
+        modeIcon.textContent = '☀️'; // Day mode icon
+    } else {
+        map.removeLayer(lightModeLayer);
+        map.addLayer(darkModeLayer);
+        modeIcon.textContent = '🌙'; // Night mode icon
+    }
+}
+
+// Function to switch between main itinerary tabs
+function opentab(event, tabname) {
+    const tabcontents = document.getElementsByClassName("tab-contents");
+    const tablinks = document.getElementsByClassName("tab-links");
+
+    // Hide all tab contents and remove active class from all tab links
+    for (let content of tabcontents) {
+        content.classList.remove("active-tab");
+    }
+    for (let link of tablinks) {
+        link.classList.remove("active-link");
+    }
+
+    // Show the selected tab content and mark the clicked tab as active
+    document.getElementById(tabname).classList.add("active-tab");
+    event.currentTarget.classList.add("active-link");
+
+    // Call the appropriate function based on the selected tab
+    switch(tabname) {
+        case "onedays":
+            oneday();
+            break;
+        case "threedays":
+            openday(event, 'day1', 'threedays');
+            break;
+        case "fivedays":
+            openday(event, 'day1', 'fivedays');
+            break;
+        case "sevendays":
+            openday(event, 'day1', 'sevendays');
+            break;
+    }
+}
+
+// Function to switch between days for multi-day itineraries
+function openday(event, day, itinerary) {
+    const details = document.querySelectorAll(`#${itinerary} .details`);
+    const dayTabs = document.querySelectorAll(`#${itinerary} .day-tabs .tab-links`);
+
+    // Hide all day contents and remove active class from all day tabs
+    for (let detail of details) {
+        detail.style.display = "none";
+    }
+    for (let tab of dayTabs) {
+        tab.classList.remove("active-link");
+    }
+
+    // Show the selected day's content and mark the clicked day tab as active
+    document.getElementById(`${day}-${itinerary}`).style.display = "block";
+    event.currentTarget.classList.add("active-link");
+
+    // Update the map based on the selected day and itinerary
+    updateMap(day, itinerary);
+}
+
+// Function to update the map based on the selected day and itinerary
+function updateMap(day, itinerary) {
+    // Clear the existing map
+    if (currentMap) {
+        currentMap.remove();
+    }
+
+    // Create a new map instance
+    currentMap = L.map('map', {
+        attributionControl: false
+    });
+
+    // Add the tile layer (dark mode by default)
+    darkModeLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    }).addTo(currentMap);
+
+    // Get the places data for the selected day and itinerary
+    const places = getPlacesData(day, itinerary);
+
+    // Add markers and create the route
+    let bounds = L.latLngBounds();
+    let coordinates = [];
+
+    places.forEach((place, index) => {
+        const marker = L.marker([place.lat, place.lng], {
+            icon: L.divIcon({
+                className: 'leaflet-div-icon',
+                html: (index + 1)
+            })
+        }).addTo(currentMap);
+
+        marker.bindPopup(`
+            <strong>${place.time}: ${place.name}</strong><br>
+            ${place.description}<br>
+            <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}" target="_blank">Go to Google Maps</a>
+        `);
+
+        coordinates.push([place.lat, place.lng]);
+        bounds.extend([place.lat, place.lng]);
+    });
+
+    // Add polyline connecting the places
+    L.polyline(coordinates, { color: 'blue', weight: 3 }).addTo(currentMap);
+
+    // Fit the map to show all markers
+    currentMap.fitBounds(bounds);
+}
+
+// Function to get places data based on the selected day and itinerary
+function getPlacesData(day, itinerary) {
+    const itineraryData = {
+        onedays: {
+            day1: [
+                {"name": "Bharat Bhagya Restaurant", "lat": 11.623377, "lng": 92.726483, "time": "08:00 AM", "description": "Begin your day with a scrumptious breakfast. Savor local dishes like idli, dosa, or pancakes with chutney."}, 
+                {"name": "Cellular Jail", "lat": 11.6721, "lng": 92.7385, "time": "10:00 AM", "description": "Visit the historic Cellular Jail, a symbol of India's freedom struggle. Witness the sound and light show in the evening."}, 
+                {"name": "The Brown Tree Snake Restaurant", "lat": 11.6542, "lng": 92.7312, "time": "01:00 PM", "description": "Indulge in a delightful lunch. Try authentic Andamanese dishes such as fish curry, crab xacuti, and rice."}, 
+                {"name": "Chatham Saw Mill", "lat": 11.6711, "lng": 92.7265, "time": "02:30 PM", "description": "Explore the largest sawmill in Asia and discover the mangrove forests while observing the wood processing."}, 
+                {"name": "Kala Pathar Beach", "lat": 12.0896, "lng": 92.9952, "time": "04:00 PM", "description": "Relax at the beach and enjoy the stunning sunset views."},
+                {"name": "The Dining Room at The Park", "lat": 11.6580, "lng": 92.7350, "time": "07:00 PM", "description": "End your day with an exquisite dinner offering international cuisine and fresh seafood."}
+            ],
+        },
+        threedays: {
+            day1: [
+                {"name": "Bharat Bhavan Restaurant", "lat": 11.623377, "lng": 92.726483, "time": "08:00 AM", "description": "Start your day with a hearty breakfast."},
+                {"name": "Cellular Jail and Museum", "lat": 11.6721, "lng": 92.7385, "time": "10:00 AM", "description": "Visit the historic Cellular Jail and Museum (entry at 10:30 AM)."},
+                {"name": "Café Deltamine", "lat": 11.6534, "lng": 92.7312, "time": "01:00 PM", "description": "Enjoy lunch at Café Deltamine."},
+                {"name": "Chatham Saw Mill and Mangrove Forest", "lat": 11.6711, "lng": 92.7265, "time": "02:30 PM", "description": "Explore the Chatham Saw Mill and Mangrove Forest."},
+                {"name": "Bamboo Flute Restaurant", "lat": 11.6580, "lng": 92.7350, "time": "07:00 PM", "description": "Have dinner at Bamboo Flute Restaurant."}
+            ],
+
+            day2: [
+                {"name": "Dhanraj Bhagat Restaurant", "lat": 11.6273, "lng": 92.7242, "time": "08:00 AM", "description": "Begin your day with breakfast at Dhanraj Bhagat Restaurant."},
+                {"name": "Havelock Island", "lat": 12.0333, "lng": 93.0000, "time": "10:00 AM", "description": "Travel to Havelock Island by ferry, arriving around noon."},
+                {"name": "Grand Haveli Resort & Spa", "lat": 12.0021, "lng": 93.0013, "time": "01:00 PM", "description": "Enjoy lunch at Grand Haveli Resort & Spa."},
+                {"name": "Radhanagar Beach", "lat": 12.0162, "lng": 92.9936, "time": "02:30 PM", "description": "Visit Radhanagar Beach and relax or participate in water activities."},
+                {"name": "The Blue Water Restaurant", "lat": 12.0020, "lng": 92.9980, "time": "07:00 PM", "description": "Dine at The Blue Water Restaurant."}
+            ],
+
+            day3: [
+                {"name": "Sagar Ratna Restaurant", "lat": 11.6378, "lng": 92.7245, "time": "08:00 AM", "description": "Breakfast at Sagar Ratna Restaurant."},
+                {"name": "Neil Island", "lat": 11.8498, "lng": 93.0527, "time": "10:00 AM", "description": "Journey to Neil Island by ferry, arriving around noon."},
+                {"name": "Sea Shell Resort & Spa", "lat": 11.8496, "lng": 93.0518, "time": "01:00 PM", "description": "Lunch at Sea Shell Resort & Spa."},
+                {"name": "Sitapur Beach", "lat": 11.8500, "lng": 93.0543, "time": "02:30 PM", "description": "Explore Sitapur Beach and enjoy snorkeling."},
+                {"name": "Panchavati Guest House Restaurant", "lat": 11.8456, "lng": 93.0521, "time": "07:00 PM", "description": "End your day with dinner at Panchavati Guest House Restaurant."}
+            ],
+        },
+        fivedays: {
+            day1: [
+                {"name": "Bharat Bhavan Restaurant", "lat": 11.623377, "lng": 92.726483, "time": "08:00 AM", "description": "Start your day with a hearty breakfast."},
+                {"name": "Cellular Jail and Museum", "lat": 11.6721, "lng": 92.7385, "time": "10:00 AM", "description": "Visit the historic Cellular Jail and Museum."},
+                {"name": "Café Delfini", "lat": 11.6534, "lng": 92.7312, "time": "01:00 PM", "description": "Enjoy lunch at Café Delfini."},
+                {"name": "Rajiv Gandhi National IT Park and Chirpai Reef", "lat": 11.6711, "lng": 92.7265, "time": "02:30 PM", "description": "Explore Rajiv Gandhi National IT Park and Chirpai Reef."},
+                {"name": "The Big Yellow Tree", "lat": 11.6580, "lng": 92.7350, "time": "07:00 PM", "description": "Have dinner at The Big Yellow Tree."}
+            ],
+
+            day2: [
+                {"name": "Dil Se Restaurant", "lat": 11.6273, "lng": 92.7242, "time": "08:00 AM", "description": "Begin your day with breakfast at Dil Se Restaurant."},
+                {"name": "Mahatma Gandhi Marine National Park", "lat": 11.5833, "lng": 92.7167, "time": "10:00 AM", "description": "Visit Mahatma Gandhi Marine National Park and enjoy snorkeling."},
+                {"name": "Bon Vivant", "lat": 11.6420, "lng": 92.7350, "time": "01:00 PM", "description": "Savor lunch at Bon Vivant."},
+                {"name": "Wandoor Beach and Lighthouse", "lat": 11.5944, "lng": 92.6736, "time": "02:30 PM", "description": "Explore Wandoor Beach and Lighthouse."},
+                {"name": "Spice Garden", "lat": 11.6500, "lng": 92.7350, "time": "07:00 PM", "description": "Experience dinner at Spice Garden."}
+            ],
+
+            day3: [
+                {"name": "Sea Shell Restaurant", "lat": 11.6378, "lng": 92.7245, "time": "08:00 AM", "description": "Start your day with breakfast at Sea Shell Restaurant."},
+                {"name": "Radhanagar Beach", "lat": 12.0333, "lng": 92.9633, "time": "10:00 AM", "description": "Visit Radhanagar Beach and participate in water activities."},
+                {"name": "Rasoi", "lat": 12.0332, "lng": 92.9630, "time": "01:00 PM", "description": "Enjoy lunch at Rasoi."},
+                {"name": "Kala Pathar Beach", "lat": 12.0280, "lng": 92.9930, "time": "02:30 PM", "description": "Explore Kala Pathar Beach and enjoy sunset views."},
+                {"name": "Fish Land", "lat": 12.0290, "lng": 92.9900, "time": "07:00 PM", "description": "Have dinner at Fish Land."}
+            ],
+
+            day4: [
+                {"name": "Sagar Ratna", "lat": 11.5893, "lng": 92.7064, "time": "08:00 AM", "description": "Begin your day with breakfast at Sagar Ratna."},
+                {"name": "Baratang Island and Limestone Caves", "lat": 12.1020, "lng": 92.8000, "time": "10:00 AM", "description": "Visit Baratang Island and explore the Limestone Caves."},
+                {"name": "Boat House", "lat": 12.0550, "lng": 92.7800, "time": "01:00 PM", "description": "Enjoy lunch at Boat House."},
+                {"name": "Diglipur, Ross and Smith Islands", "lat": 13.1301, "lng": 93.0330, "time": "02:30 PM", "description": "Explore Diglipur and visit Ross and Smith Islands."},
+                {"name": "Aam Prasad", "lat": 13.1320, "lng": 93.0350, "time": "07:00 PM", "description": "Have dinner at Aam Prasad."}
+            ],
+
+            day5: [
+                {"name": "Trikut Villa", "lat": 11.6115, "lng": 92.7260, "time": "08:00 AM", "description": "Start your day with breakfast at Trikut Villa."},
+                {"name": "North Bay Island", "lat": 11.7069, "lng": 92.7397, "time": "10:00 AM", "description": "Visit North Bay Island and enjoy a glass-bottom boat ride."},
+                {"name": "The Green Room", "lat": 11.6750, "lng": 92.7350, "time": "01:00 PM", "description": "Enjoy lunch at The Green Room."},
+                {"name": "Aberdeen Bazaar", "lat": 11.6754, "lng": 92.7320, "time": "02:30 PM", "description": "Explore Aberdeen Bazaar for shopping."},
+                {"name": "The Dining Room at Symphony Palms Resort", "lat": 11.6758, "lng": 92.7309, "time": "07:00 PM", "description": "Have dinner at The Dining Room at Symphony Palms Resort."}
+            ],
+        },
+        sevendays: {
+            day1: [
+                {"name": "Bharat Bhawan Restaurant", "lat": 11.6234, "lng": 92.7265, "time": "08:00 AM", "description": "Begin with a hearty breakfast."},
+                {"name": "Cellular Jail", "lat": 11.6230, "lng": 92.7263, "time": "10:00 AM", "description": "Visit the Cellular Jail and Museum."},
+                {"name": "Kaala Pathar Restaurant", "lat": 11.6234, "lng": 92.7265, "time": "01:00 PM", "description": "Savor a traditional lunch."},
+                {"name": "Chatham Saw Mill", "lat": 11.6232, "lng": 92.7065, "time": "02:30 PM", "description": "Explore Chatham Saw Mill and Aberdeen Clock Tower."},
+                {"name": "Indigo Restaurant & Bar", "lat": 11.6234, "lng": 92.7265, "time": "07:00 PM", "description": "Dine at Indigo Restaurant & Bar."}
+            ],
+
+            day2: [
+                {"name": "Sunset Point Beach Resort", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Sunset Point Beach Resort."},
+                {"name": "Mahatma Gandhi Marine National Park", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Mahatma Gandhi Marine National Park."},
+                {"name": "Fisherman's Cove", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Fisherman's Cove."},
+                {"name": "Rutland Island", "lat": null, "lng": null, "time": "02:30 PM", "description": "Enjoy snorkeling or scuba diving at Rutland Island."},
+                {"name": "The Bougainvillea Restaurant", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Bougainvillea Restaurant."}
+            ],
+
+            day3: [
+                {"name": "Merlin Sarovar Portico", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Merlin Sarovar Portico."},
+                {"name": "North Bay (Jolly Buoy Island)", "lat": null, "lng": null, "time": "10:00 AM", "description": "Excursion to North Bay (Jolly Buoy Island)."},
+                {"name": "Dugupudi Beach", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Dugupudi Beach."},
+                {"name": "Wandoor Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Relax at Wandoor Beach or explore Viper Island."},
+                {"name": "Sea Shell Restaurant", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Sea Shell Restaurant."}
+            ],
+
+            day4: [
+                {"name": "Sagar Holiday Home", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Sagar Holiday Home."},
+                {"name": "Radhanagar Beach", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Radhanagar Beach."},
+                {"name": "Bharat Holidays", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Bharat Holidays."},
+                {"name": "Karmatang Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Karmatang Beach or Laxmanpur Beach."},
+                {"name": "The Coral Reef Resort", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Coral Reef Resort."}
+            ],
+
+            day5: [
+                {"name": "Green Ocean Resort", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Green Ocean Resort."},
+                {"name": "Long Island", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Long Island."},
+                {"name": "Blue Water Café", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Blue Water Café."},
+                {"name": "Little Andaman Island", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Little Andaman Island or Hut Bay."},
+                {"name": "Murugan Idli Shop", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Murugan Idli Shop."}
+            ],
+
+            day6: [
+                {"name": "Pristine Beach Resort", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Pristine Beach Resort."},
+                {"name": "Ross Island", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Ross Island."},
+                {"name": "Ananda Restaurant", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Ananda Restaurant."},
+                {"name": "Lamkulat Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Lamkulat Beach or Mount Harriet."},
+                {"name": "The Tamarind Palm", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Tamarind Palm."}
+            ],
+
+            day7: [
+                {"name": "Sea Shell Resort and Spa", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Sea Shell Resort and Spa."},
+                {"name": "Kala Patthar Beach", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Kala Patthar Beach or Shyam Nagar Beach."},
+                {"name": "Beach No. 7", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Beach No. 7."},
+                {"name": "Aberdeen Bazaar", "lat": null, "lng": null, "time": "02:30 PM", "description": "Shopping at Aberdeen Bazaar or explore Port Blair Market."},
+                {"name": "The Palms", "lat": null, "lng": null, "time": "07:00 PM", "description": "Farewell dinner at The Palms."}
+            ]
+
+        }
+    };
+    return itineraryData[itinerary][day] || [];
+}
+
+// Initialize the default view (one day itinerary)
+document.addEventListener("DOMContentLoaded", function() {
+    oneday();
+});
+
+// One day itinerary function
+function oneday() {
+    updateMap('day1', 'onedays');
+}
+
+// Helper functions for other itineraries
+function threeone() { updateMap('day1', 'threedays'); }
+function threetwo() { updateMap('day2', 'threedays'); }
+function threethree() { updateMap('day3', 'threedays'); }
+
+function fiveone() { updateMap('day1', 'fivedays'); }
+function fivetwo() { updateMap('day2', 'fivedays'); }
+function fivethree() { updateMap('day3', 'fivedays'); }
+function fivefour() { updateMap('day4', 'fivedays'); }
+function fivefive() { updateMap('day5', 'fivedays'); }
+
+document.getElementById('profile-pic').addEventListener('click', function() {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const profileDetails = document.getElementById('profile-details');
+            const settingsMenu = document.getElementById('settings-menu');
+
+            if (dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+                profileDetails.style.display = 'none';
+                settingsMenu.style.display = 'none';
+            } else {
+                dropdownMenu.style.display = 'block';
+            }
+        });
+
+        document.getElementById('show-profile').addEventListener('click', function(event) {
+            event.stopPropagation();
+            const profileDetails = document.getElementById('profile-details');
+            profileDetails.style.display = profileDetails.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('close-profile').addEventListener('click', function() {
+            const profileDetails = document.getElementById('profile-details');
+            profileDetails.style.display = 'none';
+        });
+
+        document.getElementById('upload-photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-pic').src = e.target.result;
+                    document.getElementById('profile-summary-pic').src = e.target.result;
+                    document.getElementById('profile-details-pic').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelector('#settings-icon').addEventListener('click', function() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('close-settings').addEventListener('click', function() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.style.display = 'none';
+        });
+
+        window.onclick = function(event) {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const profileDetails = document.getElementById('profile-details');
+            const settingsMenu = document.getElementById('settings-menu');
+            
+            if (!event.target.matches('#profile-pic') && !event.target.closest('.dropdown-menu')) {
+                dropdownMenu.style.display = 'none';
+                profileDetails.style.display = 'none';
+                settingsMenu.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

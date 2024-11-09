@@ -1,0 +1,745 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pondicherry Itinerary</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+         body.night-mode {
+            background: radial-gradient(ellipse at top, #1b2735 0%, #090a0f 100%);;
+            color: #f5f5f5;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .left-section {
+            flex: 2; /* More space for the itinerary and image */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-section {
+            flex: 1; /* Less space for the map */
+        }
+
+        #map { 
+            height: 500px;
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px; /* Ensures gap between map and buttons */
+        }
+        a.buttn {
+            padding: 10px 20px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none; /* Remove underline */
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        a.buttn:hover {
+            background-color: #444;
+        }
+
+        .buttons-container {
+            display: flex; /* Use flexbox to align items */
+            justify-content: center; /* Center the buttons */
+            gap: 10px; /* Space between buttons */
+            margin-top: 20px; /* Space above the buttons (if needed) */
+        }
+
+        .photo {
+            width: 200px;
+            height: 100px;
+            border-radius: 10px;
+        }
+
+        .details {
+            margin-top: 20px;
+        }
+
+        .details h2, .details p {
+            margin-bottom: 10px;
+        }
+
+        .scroll-box {
+            max-height: 300px;
+            overflow-y: scroll;
+            padding-right: 10px;
+        }
+
+
+        /* Style for numbered markers */
+        .leaflet-div-icon {
+            background-color: red;
+            color: white;
+            text-align: center;
+            border-radius: 50%;
+            font-size: 14px;
+            line-height: 24px;
+            width: 30px;
+            height: 30px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .tab-titles {
+            display: flex;
+            margin: 20px 0 40px;
+            transition: transform 0.5s;   
+        }
+
+        .tab-links {
+            margin-right: 50px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            transition: transform 0.5s;
+        }
+
+        .tab-links:hover {
+            color:#E1D14E;
+            transform: translateY(-5px);
+        }
+
+        .tab-links::after {
+            content: '';
+            width:0;
+            height: 3px;
+            color:#E1D14E;
+            background: #ff004f;
+            position:absolute;
+            left: 0;
+            bottom: -8px;
+            transition: 0.5s;
+        }
+
+        .tab-links.active-link::after {
+            width: 100%;
+        }
+        .tab-contents {
+            display: none;
+        }
+
+        .tab-contents.active-tab {
+            display: block;
+        }
+        /* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+    </style>
+</head>
+
+<body class="night-mode">
+    <div class="container">
+        <!-- Left section for photo and itinerary -->
+        <div class="left-section">
+            <h1>Pondicherry Itinerary</h1>
+
+            <img src="{% static 'video/pondicherry.jpg' %}" alt="Golden Temple" class="photo">
+
+            <!-- Scrollable itinerary section -->
+            <div class="about-col-2">
+                <div class="tab-titles">
+                    <p class="tab-links active-link" onclick="opentab(event, 'onedays'),oneday()">ONE DAY Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'threedays')">THREE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'fivedays')">FIVE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'sevendays')">SEVEN DAYS Itinerary</p>
+                </div>
+                <div class="tab-contents active-tab" id="onedays">
+                    <div class="scroll-box"> 
+                        <div class="details">
+                            <h2>Day 1 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a delightful French-style breakfast at <em>Café des Arts</em>, famous for its croissants and freshly brewed coffee.</p>
+                            <p><strong>10:00 AM:</strong> Visit the serene <em>Sri Aurobindo Ashram</em>, a peaceful retreat offering meditation and insight into spiritual growth.</p>
+                            <p><strong>1:00 PM:</strong> Relish a delicious lunch at <em>Le Dupleix</em>, where you can savor a unique fusion of French and Indian cuisines in a colonial ambiance.</p>
+                            <p><strong>2:30 PM:</strong> Explore the rich history of the region at the <em>Pondicherry Museum</em>, featuring ancient artifacts and French colonial exhibits.</p>
+                            <p><strong>5:00 PM:</strong> Unwind with a leisurely evening stroll along the scenic <em>Promenade Beach</em>, soaking in the coastal breeze and stunning views.</p>
+                            <p><strong>7:00 PM:</strong> End your day with an exquisite dinner at <em>Villa Shanti</em>, renowned for its gourmet fusion of French and Indian dishes in an elegant colonial setting.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="threedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'threedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'threedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'threedays')">Day 3</p>
+                    </div>
+                    <div class="scroll-box">
+                        <div class="details" id="day1-threedays">
+                            <h2>Day 1 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Have breakfast at <em>Café des Arts</em>.</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Sri Aurobindo Ashram</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Le Dupleix</em>.</p>
+                            <p><strong>2:30 PM:</strong> Visit the <em>Pondicherry Museum</em>.</p>
+                            <p><strong>5:00 PM:</strong> Walk along the <em>Promenade Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Villa Shanti</em>.</p>
+                        </div>
+                        <div class="details" id="day2-threedays" style="display: none;">
+                            <h2>Day 2 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Start with a hearty breakfast at <em>Baker Street</em>, famous for its pastries and quiches.</p>
+                            <p><strong>10:00 AM:</strong> Take a trip to <em>Auroville</em>, an international community dedicated to human unity, and explore the <em>Matri Mandir</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a meal at <em>The Solar Kitchen</em>, Auroville's organic and sustainable dining space.</p>
+                            <p><strong>2:30 PM:</strong> Head back to Pondicherry and visit the <em>Botanical Gardens</em>, home to exotic plant species.</p>
+                            <p><strong>5:00 PM:</strong> Relax at <em>Serenity Beach</em>, a quieter spot for swimming and surfing.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Coromandel Café</em>, offering a blend of French and Italian cuisines.</p>
+
+                        </div>
+                        <div class="details" id="day3-threedays" style="display: none;">
+                            <h2>Day 3 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>La Maison Rose</em>, known for its tranquil garden setting and continental options.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Basilica of the Sacred Heart of Jesus</em>, a beautiful example of Gothic architecture.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>La Villa</em>, a luxurious dining spot serving Mediterranean and French-inspired dishes.</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>French War Memorial</em> and learn about the colonial history.</p>
+                            <p><strong>5:00 PM:</strong> Take a sunset boat ride on the <em>Chunnambar Backwaters</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>Surguru</em>, a popular spot for South Indian vegetarian food.</p>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="fivedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'fivedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'fivedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'fivedays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'fivedays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'fivedays')">Day 5</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-fivedays">
+                            <h2>Day 1 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Have breakfast at <em>Café des Arts</em>.</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Sri Aurobindo Ashram</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Le Dupleix</em>.</p>
+                            <p><strong>2:30 PM:</strong> Visit the <em>Pondicherry Museum</em>.</p>
+                            <p><strong>5:00 PM:</strong> Walk along the <em>Promenade Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Villa Shanti</em>.</p>
+                        </div>
+                        <div class="details" id="day2-fivedays" style="display: none;">
+                            <h2>Day 2 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Start with a hearty breakfast at <em>Baker Street</em>, famous for its pastries and quiches.</p>
+                            <p><strong>10:00 AM:</strong> Take a trip to <em>Auroville</em>, an international community dedicated to human unity, and explore the <em>Matri Mandir</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a meal at <em>The Solar Kitchen</em>, Auroville's organic and sustainable dining space.</p>
+                            <p><strong>2:30 PM:</strong> Head back to Pondicherry and visit the <em>Botanical Gardens</em>, home to exotic plant species.</p>
+                            <p><strong>5:00 PM:</strong> Relax at <em>Serenity Beach</em>, a quieter spot for swimming and surfing.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Coromandel Café</em>, offering a blend of French and Italian cuisines.</p>
+
+                        </div>
+                        <div class="details" id="day3-fivedays" style="display: none;">
+                            <h2>Day 3 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>La Maison Rose</em>, known for its tranquil garden setting and continental options.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Basilica of the Sacred Heart of Jesus</em>, a beautiful example of Gothic architecture.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>La Villa</em>, a luxurious dining spot serving Mediterranean and French-inspired dishes.</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>French War Memorial</em> and learn about the colonial history.</p>
+                            <p><strong>5:00 PM:</strong> Take a sunset boat ride on the <em>Chunnambar Backwaters</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>Surguru</em>, a popular spot for South Indian vegetarian food.</p>
+
+                        </div>
+                        <div class="details" id="day4-fivedays" style="display: none;">
+                            <h2>Day 4 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Café Xtasi</em>, known for its wood-fired pizzas and sandwiches.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Chunnambar Boat House</em> for a boating experience and relax at <em>Paradise Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Have a beachside lunch at <em>Le Café</em> on Promenade Beach.</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>Goubert Market</em>, a vibrant place to shop for fresh produce, spices, and souvenirs.</p>
+                            <p><strong>5:00 PM:</strong> Visit <em>Old Lighthouse</em>, a historic landmark offering great views of the city.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Theevu Plage</em>, a beachfront restaurant serving seafood and local specialties.</p>
+                        </div>
+                        <div class="details" id="day5-fivedays" style="display: none;">
+                            <h2>Day 5 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Enjoy a calm breakfast at <em>Dilliwaala6</em>, offering North Indian delicacies.</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Raj Niwas</em>, the residence of the Lieutenant Governor of Pondicherry.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Chez François</em>, a cozy French bistro.</p>
+                            <p><strong>2:30 PM:</strong> Visit the <em>Immaculate Conception Cathedral</em>, one of the oldest churches in Pondicherry.</p>
+                            <p><strong>5:00 PM:</strong> Stroll through <em>Bharathi Park</em>, a green oasis in the heart of the city.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Kasha Ki Aasha</em>, known for its rooftop ambiance and fusion menu.</p>
+                        </div>
+                    </div>
+                </div>                
+                <div class="tab-contents" id="sevendays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'sevendays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'sevendays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'sevendays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'sevendays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'sevendays')">Day 5</p>
+                        <p class="tab-links" onclick="openday(event, 'day6', 'sevendays')">Day 6</p>
+                        <p class="tab-links" onclick="openday(event, 'day7', 'sevendays')">Day 7</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-sevendays">
+                            <h2>Day 1 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Have breakfast at <em>Café des Arts</em>.</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Sri Aurobindo Ashram</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Le Dupleix</em>.</p>
+                            <p><strong>2:30 PM:</strong> Visit the <em>Pondicherry Museum</em>.</p>
+                            <p><strong>5:00 PM:</strong> Walk along the <em>Promenade Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Villa Shanti</em>.</p>
+                        </div>
+                        <div class="details" id="day2-sevendays" style="display: none;">
+                            <h2>Day 2 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Start with a hearty breakfast at <em>Baker Street</em>, famous for its pastries and quiches.</p>
+                            <p><strong>10:00 AM:</strong> Take a trip to <em>Auroville</em>, an international community dedicated to human unity, and explore the <em>Matri Mandir</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a meal at <em>The Solar Kitchen</em>, Auroville's organic and sustainable dining space.</p>
+                            <p><strong>2:30 PM:</strong> Head back to Pondicherry and visit the <em>Botanical Gardens</em>, home to exotic plant species.</p>
+                            <p><strong>5:00 PM:</strong> Relax at <em>Serenity Beach</em>, a quieter spot for swimming and surfing.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Coromandel Café</em>, offering a blend of French and Italian cuisines.</p>
+
+                        </div>
+                        <div class="details" id="day3-sevendays" style="display: none;">
+                            <h2>Day 3 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>La Maison Rose</em>, known for its tranquil garden setting and continental options.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Basilica of the Sacred Heart of Jesus</em>, a beautiful example of Gothic architecture.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>La Villa</em>, a luxurious dining spot serving Mediterranean and French-inspired dishes.</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>French War Memorial</em> and learn about the colonial history.</p>
+                            <p><strong>5:00 PM:</strong> Take a sunset boat ride on the <em>Chunnambar Backwaters</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>Surguru</em>, a popular spot for South Indian vegetarian food.</p>
+
+                        </div>
+                        <div class="details" id="day4-sevendays" style="display: none;">
+                            <h2>Day 4 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Café Xtasi</em>, known for its wood-fired pizzas and sandwiches.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Chunnambar Boat House</em> for a boating experience and relax at <em>Paradise Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Have a beachside lunch at <em>Le Café</em> on Promenade Beach.</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>Goubert Market</em>, a vibrant place to shop for fresh produce, spices, and souvenirs.</p>
+                            <p><strong>5:00 PM:</strong> Visit <em>Old Lighthouse</em>, a historic landmark offering great views of the city.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Theevu Plage</em>, a beachfront restaurant serving seafood and local specialties.</p>
+                        </div>
+                        <div class="details" id="day5-sevendays" style="display: none;">
+                            <h2>Day 5 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Enjoy a calm breakfast at <em>Dilliwaala6</em>, offering North Indian delicacies.</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Raj Niwas</em>, the residence of the Lieutenant Governor of Pondicherry.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Chez François</em>, a cozy French bistro.</p>
+                            <p><strong>2:30 PM:</strong> Visit the <em>Immaculate Conception Cathedral</em>, one of the oldest churches in Pondicherry.</p>
+                            <p><strong>5:00 PM:</strong> Stroll through <em>Bharathi Park</em>, a green oasis in the heart of the city.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Kasha Ki Aasha</em>, known for its rooftop ambiance and fusion menu.</p>
+                        </div>
+                        <div class="details" id="day6-sevendays" style="display: none;">
+                            <h2>Day 6 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a light breakfast at <em>Zuka Café</em>, famous for its chocolate-based dishes.</p>
+                            <p><strong>10:00 AM:</strong> Visit the serene <em>Ousteri Lake</em>, a popular spot for birdwatching and boat rides.</p>
+                            <p><strong>1:00 PM:</strong> Have lunch at <em>The Promenade</em>, a hotel offering fine dining with sea views.</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>Jawahar Toy Museum</em>, featuring traditional Indian toys and puppets.</p>
+                            <p><strong>5:00 PM:</strong> Enjoy a peaceful evening at <em>Veerampattinam Beach</em>, a quiet spot perfect for relaxation.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>Bay of Buddha</em>, a rooftop restaurant serving pan-Asian cuisine with views of the sea.</p>
+                        </div>
+                        <div class="details" id="day7-sevendays" style="display: none;">
+                            <h2>Day 7 in Pondicherry:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Satsanga</em>, serving French and Italian cuisine.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Arikamedu</em>, an ancient Roman trading port located just outside of Pondicherry.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>La Plancha</em>, a casual beachside café.</p>
+                            <p><strong>2:30 PM:</strong> Take a walk through <em>White Town</em>, the French Quarter, and admire the colonial architecture.</p>
+                            <p><strong>5:00 PM:</strong> Have a relaxing evening at <em>Rock Beach</em>, a perfect place to unwind.</p>
+                            <p><strong>7:00 PM:</strong> End your trip with dinner at <em>Le Chateau</em>, a heritage hotel serving authentic French cuisine.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Right section for map -->
+        <div class="right-section">
+            <div id="map"></div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; Voyage Verse - 2024</p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+
+    <script>
+// Global variable to store the current map instance
+let currentMap;
+let darkModeLayer;
+let lightModeLayer;
+
+// Night Mode Toggle
+function toggleNightMode() {
+    const body = document.body;
+    const modeIcon = document.getElementById('modeIcon');
+    
+    // Toggle between day and night modes
+    body.classList.toggle('day-mode');
+    body.classList.toggle('night-mode');
+    
+    // Switch the map layers
+    if (body.classList.contains('day-mode')) {
+        map.removeLayer(darkModeLayer);
+        map.addLayer(lightModeLayer);
+        modeIcon.textContent = '☀️'; // Day mode icon
+    } else {
+        map.removeLayer(lightModeLayer);
+        map.addLayer(darkModeLayer);
+        modeIcon.textContent = '🌙'; // Night mode icon
+    }
+}
+
+// Function to switch between main itinerary tabs
+function opentab(event, tabname) {
+    const tabcontents = document.getElementsByClassName("tab-contents");
+    const tablinks = document.getElementsByClassName("tab-links");
+
+    // Hide all tab contents and remove active class from all tab links
+    for (let content of tabcontents) {
+        content.classList.remove("active-tab");
+    }
+    for (let link of tablinks) {
+        link.classList.remove("active-link");
+    }
+
+    // Show the selected tab content and mark the clicked tab as active
+    document.getElementById(tabname).classList.add("active-tab");
+    event.currentTarget.classList.add("active-link");
+
+    // Call the appropriate function based on the selected tab
+    switch(tabname) {
+        case "onedays":
+            oneday();
+            break;
+        case "threedays":
+            openday(event, 'day1', 'threedays');
+            break;
+        case "fivedays":
+            openday(event, 'day1', 'fivedays');
+            break;
+        case "sevendays":
+            openday(event, 'day1', 'sevendays');
+            break;
+    }
+}
+
+// Function to switch between days for multi-day itineraries
+function openday(event, day, itinerary) {
+    const details = document.querySelectorAll(`#${itinerary} .details`);
+    const dayTabs = document.querySelectorAll(`#${itinerary} .day-tabs .tab-links`);
+
+    // Hide all day contents and remove active class from all day tabs
+    for (let detail of details) {
+        detail.style.display = "none";
+    }
+    for (let tab of dayTabs) {
+        tab.classList.remove("active-link");
+    }
+
+    // Show the selected day's content and mark the clicked day tab as active
+    document.getElementById(`${day}-${itinerary}`).style.display = "block";
+    event.currentTarget.classList.add("active-link");
+
+    // Update the map based on the selected day and itinerary
+    updateMap(day, itinerary);
+}
+
+// Function to update the map based on the selected day and itinerary
+function updateMap(day, itinerary) {
+    // Clear the existing map
+    if (currentMap) {
+        currentMap.remove();
+    }
+
+    // Create a new map instance
+    currentMap = L.map('map', {
+        attributionControl: false
+    });
+
+    // Add the tile layer (dark mode by default)
+    darkModeLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    }).addTo(currentMap);
+
+    // Get the places data for the selected day and itinerary
+    const places = getPlacesData(day, itinerary);
+
+    // Add markers and create the route
+    let bounds = L.latLngBounds();
+    let coordinates = [];
+
+    places.forEach((place, index) => {
+        const marker = L.marker([place.lat, place.lng], {
+            icon: L.divIcon({
+                className: 'leaflet-div-icon',
+                html: (index + 1)
+            })
+        }).addTo(currentMap);
+
+        marker.bindPopup(`
+            <strong>${place.time}: ${place.name}</strong><br>
+            ${place.description}<br>
+            <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}" target="_blank">Go to Google Maps</a>
+        `);
+
+        coordinates.push([place.lat, place.lng]);
+        bounds.extend([place.lat, place.lng]);
+    });
+
+    // Add polyline connecting the places
+    L.polyline(coordinates, { color: 'blue', weight: 3 }).addTo(currentMap);
+
+    // Fit the map to show all markers
+    currentMap.fitBounds(bounds);
+}
+
+// Function to get places data based on the selected day and itinerary
+function getPlacesData(day, itinerary) {
+    const itineraryData = {
+        onedays: {
+            day1: [
+                {"name": "Café des Arts", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin your day with a delightful French-style breakfast at Café des Arts, famous for its croissants and freshly brewed coffee."},
+                {"name": "Sri Aurobindo Ashram", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the serene Sri Aurobindo Ashram, a peaceful retreat offering meditation and insight into spiritual growth."},
+                {"name": "Le Dupleix", "lat": null, "lng": null, "time": "01:00 PM", "description": "Relish a delicious lunch at Le Dupleix, where you can savor a unique fusion of French and Indian cuisines in a colonial ambiance."},
+                {"name": "Pondicherry Museum", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the rich history of the region at the Pondicherry Museum, featuring ancient artifacts and French colonial exhibits."},
+                {"name": "Promenade Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Unwind with a leisurely evening stroll along the scenic Promenade Beach, soaking in the coastal breeze and stunning views."},
+                {"name": "Villa Shanti", "lat": null, "lng": null, "time": "07:00 PM", "description": "End your day with an exquisite dinner at Villa Shanti, renowned for its gourmet fusion of French and Indian dishes in an elegant colonial setting."}
+            ],
+        },
+        threedays: {
+            day1: [
+                {"name": "Café des Arts", "lat": null, "lng": null, "time": "08:00 AM", "description": "Have breakfast at Café des Arts."},
+                {"name": "Sri Aurobindo Ashram", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Sri Aurobindo Ashram."},
+                {"name": "Le Dupleix", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Le Dupleix."},
+                {"name": "Pondicherry Museum", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Pondicherry Museum."},
+                {"name": "Promenade Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Walk along the Promenade Beach."},
+                {"name": "Villa Shanti", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Villa Shanti."}
+            ],
+            day2: [
+                {"name": "Baker Street", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start with a hearty breakfast at Baker Street, famous for its pastries and quiches."},
+                {"name": "Auroville", "lat": null, "lng": null, "time": "10:00 AM", "description": "Take a trip to Auroville and explore the Matri Mandir."},
+                {"name": "The Solar Kitchen", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy a meal at The Solar Kitchen, Auroville's organic dining space."},
+                {"name": "Botanical Gardens", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Botanical Gardens, home to exotic plant species."},
+                {"name": "Serenity Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Relax at Serenity Beach, a quieter spot for swimming and surfing."},
+                {"name": "Coromandel Café", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Coromandel Café, offering a blend of French and Italian cuisines."}
+            ],
+            day3: [
+                {"name": "La Maison Rose", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at La Maison Rose, known for its tranquil garden setting."},
+                {"name": "Basilica of the Sacred Heart of Jesus", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the Basilica of the Sacred Heart of Jesus."},
+                {"name": "La Villa", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at La Villa, serving Mediterranean and French-inspired dishes."},
+                {"name": "French War Memorial", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the French War Memorial and learn about colonial history."},
+                {"name": "Chunnambar Backwaters", "lat": null, "lng": null, "time": "05:00 PM", "description": "Take a sunset boat ride on the Chunnambar Backwaters."},
+                {"name": "Surguru", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dine at Surguru, a popular spot for South Indian vegetarian food."}
+            ],
+        },
+        fivedays: {
+            day1: [
+                {"name": "Café des Arts", "lat": null, "lng": null, "time": "08:00 AM", "description": "Have breakfast at Café des Arts."},
+                {"name": "Sri Aurobindo Ashram", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Sri Aurobindo Ashram."},
+                {"name": "Le Dupleix", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Le Dupleix."},
+                {"name": "Pondicherry Museum", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Pondicherry Museum."},
+                {"name": "Promenade Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Walk along the Promenade Beach."},
+                {"name": "Villa Shanti", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Villa Shanti."}
+            ],
+            day2: [
+                {"name": "Baker Street", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start with a hearty breakfast at Baker Street, famous for its pastries and quiches."},
+                {"name": "Auroville", "lat": null, "lng": null, "time": "10:00 AM", "description": "Take a trip to Auroville and explore the Matri Mandir."},
+                {"name": "The Solar Kitchen", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy a meal at The Solar Kitchen, Auroville's organic dining space."},
+                {"name": "Botanical Gardens", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Botanical Gardens, home to exotic plant species."},
+                {"name": "Serenity Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Relax at Serenity Beach, a quieter spot for swimming and surfing."},
+                {"name": "Coromandel Café", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Coromandel Café, offering a blend of French and Italian cuisines."}
+            ],
+            day3: [
+                {"name": "La Maison Rose", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at La Maison Rose, known for its tranquil garden setting."},
+                {"name": "Basilica of the Sacred Heart of Jesus", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the Basilica of the Sacred Heart of Jesus."},
+                {"name": "La Villa", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at La Villa, serving Mediterranean and French-inspired dishes."},
+                {"name": "French War Memorial", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the French War Memorial and learn about colonial history."},
+                {"name": "Chunnambar Backwaters", "lat": null, "lng": null, "time": "05:00 PM", "description": "Take a sunset boat ride on the Chunnambar Backwaters."},
+                {"name": "Surguru", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dine at Surguru, a popular spot for South Indian vegetarian food."}
+            ],
+            day4: [
+                {"name": "Café Xtasi", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Café Xtasi, known for its wood-fired pizzas and sandwiches."},
+                {"name": "Chunnambar Boat House", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the Chunnambar Boat House for a boating experience."},
+                {"name": "Le Café", "lat": null, "lng": null, "time": "01:00 PM", "description": "Have a beachside lunch at Le Café on Promenade Beach."},
+                {"name": "Goubert Market", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the Goubert Market, vibrant for fresh produce and souvenirs."},
+                {"name": "Old Lighthouse", "lat": null, "lng": null, "time": "05:00 PM", "description": "Visit Old Lighthouse, a historic landmark with great views."},
+                {"name": "Theevu Plage", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Theevu Plage, serving seafood and local specialties."}
+            ],
+            day5: [
+                {"name": "Dilliwaala6", "lat": null, "lng": null, "time": "08:00 AM", "description": "Enjoy a calm breakfast at Dilliwaala6, offering North Indian delicacies."},
+                {"name": "Raj Niwas", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Raj Niwas, the residence of the Lieutenant Governor."},
+                {"name": "Chez François", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Chez François, a cozy French bistro."},
+                {"name": "Immaculate Conception Cathedral", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Immaculate Conception Cathedral."},
+                {"name": "Bharathi Park", "lat": null, "lng": null, "time": "05:00 PM", "description": "Stroll through Bharathi Park, a green oasis in the city."},
+                {"name": "Kasha Ki Aasha", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Kasha Ki Aasha, known for its rooftop ambiance."}
+            ]
+
+        },
+        sevendays: {
+            day1: [
+                {"name": "Café des Arts", "lat": null, "lng": null, "time": "08:00 AM", "description": "Have breakfast at Café des Arts."},
+                {"name": "Sri Aurobindo Ashram", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Sri Aurobindo Ashram."},
+                {"name": "Le Dupleix", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Le Dupleix."},
+                {"name": "Pondicherry Museum", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Pondicherry Museum."},
+                {"name": "Promenade Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Walk along the Promenade Beach."},
+                {"name": "Villa Shanti", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Villa Shanti."}
+            ],
+            day2: [
+                {"name": "Baker Street", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start with a hearty breakfast at Baker Street."},
+                {"name": "Auroville", "lat": null, "lng": null, "time": "10:00 AM", "description": "Take a trip to Auroville and explore the Matri Mandir."},
+                {"name": "The Solar Kitchen", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy a meal at The Solar Kitchen."},
+                {"name": "Botanical Gardens", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Botanical Gardens."},
+                {"name": "Serenity Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Relax at Serenity Beach."},
+                {"name": "Coromandel Café", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Coromandel Café."}
+            ],
+            day3: [
+                {"name": "La Maison Rose", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at La Maison Rose."},
+                {"name": "Basilica of the Sacred Heart of Jesus", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the Basilica of the Sacred Heart of Jesus."},
+                {"name": "La Villa", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at La Villa."},
+                {"name": "French War Memorial", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the French War Memorial."},
+                {"name": "Chunnambar Backwaters", "lat": null, "lng": null, "time": "05:00 PM", "description": "Take a sunset boat ride."},
+                {"name": "Surguru", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dine at Surguru."}
+            ],
+            day4: [
+                {"name": "Café Xtasi", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Café Xtasi."},
+                {"name": "Chunnambar Boat House", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the Chunnambar Boat House."},
+                {"name": "Le Café", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Le Café."},
+                {"name": "Goubert Market", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the Goubert Market."},
+                {"name": "Old Lighthouse", "lat": null, "lng": null, "time": "05:00 PM", "description": "Visit Old Lighthouse."},
+                {"name": "Theevu Plage", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Theevu Plage."}
+            ],
+            day5: [
+                {"name": "Dilliwaala6", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Dilliwaala6."},
+                {"name": "Raj Niwas", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Raj Niwas."},
+                {"name": "Chez François", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Chez François."},
+                {"name": "Immaculate Conception Cathedral", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit the Immaculate Conception Cathedral."},
+                {"name": "Bharathi Park", "lat": null, "lng": null, "time": "05:00 PM", "description": "Stroll through Bharathi Park."},
+                {"name": "Kasha Ki Aasha", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Kasha Ki Aasha."}
+            ],
+            day6: [
+                {"name": "Zuka Café", "lat": null, "lng": null, "time": "08:00 AM", "description": "Light breakfast at Zuka Café."},
+                {"name": "Ousteri Lake", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Ousteri Lake."},
+                {"name": "The Promenade", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at The Promenade."},
+                {"name": "Jawahar Toy Museum", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the Jawahar Toy Museum."},
+                {"name": "Veerampattinam Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Enjoy evening at Veerampattinam Beach."},
+                {"name": "Bay of Buddha", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Bay of Buddha."}
+            ],
+            day7: [
+                {"name": "Satsanga", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Satsanga."},
+                {"name": "Arikamedu", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Arikamedu."},
+                {"name": "La Plancha", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at La Plancha."},
+                {"name": "White Town", "lat": null, "lng": null, "time": "02:30 PM", "description": "Walk through White Town."},
+                {"name": "Rock Beach", "lat": null, "lng": null, "time": "05:00 PM", "description": "Evening at Rock Beach."},
+                {"name": "Le Chateau", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Le Chateau."}
+            ]
+
+        }
+    };
+    return itineraryData[itinerary][day] || [];
+}
+
+// Initialize the default view (one day itinerary)
+document.addEventListener("DOMContentLoaded", function() {
+    oneday();
+});
+
+// One day itinerary function
+function oneday() {
+    updateMap('day1', 'onedays');
+}
+
+// Helper functions for other itineraries
+function threeone() { updateMap('day1', 'threedays'); }
+function threetwo() { updateMap('day2', 'threedays'); }
+function threethree() { updateMap('day3', 'threedays'); }
+
+function fiveone() { updateMap('day1', 'fivedays'); }
+function fivetwo() { updateMap('day2', 'fivedays'); }
+function fivethree() { updateMap('day3', 'fivedays'); }
+function fivefour() { updateMap('day4', 'fivedays'); }
+function fivefive() { updateMap('day5', 'fivedays'); }
+
+document.getElementById('profile-pic').addEventListener('click', function() {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const profileDetails = document.getElementById('profile-details');
+            const settingsMenu = document.getElementById('settings-menu');
+
+            if (dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+                profileDetails.style.display = 'none';
+                settingsMenu.style.display = 'none';
+            } else {
+                dropdownMenu.style.display = 'block';
+            }
+        });
+
+        document.getElementById('show-profile').addEventListener('click', function(event) {
+            event.stopPropagation();
+            const profileDetails = document.getElementById('profile-details');
+            profileDetails.style.display = profileDetails.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('close-profile').addEventListener('click', function() {
+            const profileDetails = document.getElementById('profile-details');
+            profileDetails.style.display = 'none';
+        });
+
+        document.getElementById('upload-photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-pic').src = e.target.result;
+                    document.getElementById('profile-summary-pic').src = e.target.result;
+                    document.getElementById('profile-details-pic').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelector('#settings-icon').addEventListener('click', function() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('close-settings').addEventListener('click', function() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.style.display = 'none';
+        });
+
+        window.onclick = function(event) {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const profileDetails = document.getElementById('profile-details');
+            const settingsMenu = document.getElementById('settings-menu');
+            
+            if (!event.target.matches('#profile-pic') && !event.target.closest('.dropdown-menu')) {
+                dropdownMenu.style.display = 'none';
+                profileDetails.style.display = 'none';
+                settingsMenu.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

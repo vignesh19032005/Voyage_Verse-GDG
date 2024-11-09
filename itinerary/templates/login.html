@@ -1,0 +1,485 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Voyage Verse</title>
+</head>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
+    overflow: hidden;
+}
+
+/* Header Styles */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+header h1 {
+    color: white;
+    font-size: 1.5rem;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 2rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+nav a:hover {
+    color: #6E2AF5;
+}
+/* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+/*-----------------------------------------------------------------------------*/
+.space-section {
+    position: flex;
+    overflow: hidden;
+}
+
+#space-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.space-section {
+    /*flex: 1;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px; /* To avoid overlap with fixed header */
+}
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px); /* Adjust height to account for nav bar height */
+    margin-top: 5px; /* Adjust margin-top to reduce the gap */
+    padding-top: 0;
+}
+
+.flip-card-front {
+    width: 900px;
+    height: 600px;
+    perspective: 1000px;
+    backface-visibility: hidden;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+.auth-content {
+    display: flex;
+    height: 100%;
+}
+.auth-form-section {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-image {
+    flex: 1;
+    background: linear-gradient(135deg, #6e2af5 0%, #1b2735 100%);
+    overflow: hidden;
+    position: relative;
+}
+
+.auth-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+.auth-image:hover img {
+    transform: scale(1.05);
+}
+.auth-header {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+.auth-header h2 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+.auth-header p {
+    color: #666;
+    font-size: 1rem;
+}
+ /* Keeping only the relevant auth styles for clarity */
+ .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    padding-right: 40px;
+}
+ .form-row {
+     display: flex;
+     gap: 0.5rem; /* Reduced from 1rem */
+     margin-bottom: 0.5rem; /* Reduced from 1rem */
+ }
+ .form-row .form-group {
+     flex: 1;
+     margin: 0;
+ }
+ .form-group input:focus {
+     border-color: #6E2AF5;
+     outline: none;
+     box-shadow: 0 0 0 2px rgba(110, 42, 245, 0.1);
+ }
+ .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    font-size: 1rem;
+}
+.password-toggle:hover {
+    color: #333;
+}
+.forgot-password {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+.forgot-password a {
+    color: #6E2AF5;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+.forgot-password a:hover {
+    color: #5620c5;
+}
+.google-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+.google-btn:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 0.5rem 0;
+    color: #666;
+}
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+.divider span {
+    padding: 0 1rem;
+}
+.submit-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #6E2AF5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.submit-btn:hover {
+    background: #5620c5;
+    transform: translateY(-1px);
+}
+.auth-footer {
+    margin-top: 0.5rem;
+    text-align: center;
+    color: #666;
+}
+.auth-footer a {
+    color: #6E2AF5;
+    text-decoration: none;
+    font-weight: 500;
+}
+.auth-footer a:hover {
+    color: #5620c5;
+}
+
+</style>
+<body>
+    <header>
+        <h1>Voyage Verse</h1>
+        <nav>
+            <a href="{% url 'home' %}#home">Home</a>
+            <a href="{% url 'home' %}#about">About</a>
+            <a href="{% url 'home' %}#contact">Contact</a>
+        </nav>
+    </header>
+    <section class="space-section" id="about">
+        <canvas id="space-canvas"></canvas>
+        <div class="card-container">
+            <div class="flip-card-front">
+                <div class="auth-content">
+                    <div class="auth-form-section">
+                        <div class="auth-header">
+                            <h2>Welcome Back</h2>
+                            <p>Sign in to continue your journey</p>
+                        </div>
+                        <form action="{% url 'login' %}" method="post" class="auth-form" id="loginForm" >
+                            {% csrf_token %}
+                            <button type="button" class="google-btn">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google" width="20">
+                                Login with Google
+                            </button>
+                            <div class="divider"><span>or</span></div>
+                            <div class="form-group">
+                                <input type="text" placeholder="Email or Phone Number" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="loginPassword" placeholder="Password" required>
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')">
+                                    <i id="loginEyeIcon" class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="forgot-password">
+                                <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+                            </div>
+                        </form>
+                            <button onclick="window.location.href='{%url 'demo' %}'" type="submit" class="submit-btn">Login</button>
+                        </form>
+                        <div class="auth-footer">
+                            Don't have an account? 
+                            <a href="{% url 'signup' %}">Sign up</a>
+                        </div>
+                    </div>
+                    <div class="auth-image">
+                        <img src="{% static 'video/train.jpg' %}" alt="Login Image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <p>&copy; Voyage Verse - 2024</p>
+    </footer>
+    <script>
+    const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        const mouse = { x: null, y: null, radius: 80 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.speedY = (Math.random() - 0.5) * 2;
+            }
+
+            draw() {
+                ctx.fillStyle = "rgba(255,255,255,0.8)";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (mouse.x && mouse.y && dist < mouse.radius) {
+                    const force = (mouse.radius - dist) / mouse.radius;
+                    const directionX = dx / dist;
+                    const directionY = dy / dist;
+                    this.x -= directionX * force * 2;
+                    this.y -= directionY * force * 2;
+                }
+
+                this.draw();
+            }
+        }
+
+        function init() {
+            resizeCanvas();
+            particles.length = 0;
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (mouse.x && mouse.y) {
+                ctx.beginPath();
+                const gradient = ctx.createRadialGradient(
+                    mouse.x, mouse.y, 0,
+                    mouse.x, mouse.y, mouse.radius
+                );
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = gradient;
+                ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            particles.forEach(particle => particle.update());
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', init);
+        window.addEventListener('scroll', () => {
+            const spaceSection = document.querySelector('.space-section');
+            const spaceBounds = spaceSection.getBoundingClientRect();
+            const scrollProgress = (window.innerHeight - spaceBounds.top) / window.innerHeight;
+            
+            if (scrollProgress > 0 && scrollProgress <= 1) {
+                canvas.style.opacity = scrollProgress;
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const spaceSection = document.querySelector('.space-section');
+            const spaceBounds = spaceSection.getBoundingClientRect();
+            
+            if (e.clientY >= spaceBounds.top && e.clientY <= spaceBounds.bottom) {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY - spaceBounds.top;
+            } else {
+                mouse.x = null;
+                mouse.y = null;
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+document.querySelector('.space-section').addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+// Handle window blur/focus events
+window.addEventListener('blur', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+// Initialize and start animation
+init();
+animate();
+function togglePasswordVisibility(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+        
+    </script>
+</body>
+</html>

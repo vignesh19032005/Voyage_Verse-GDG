@@ -1,0 +1,709 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amritsar Itinerary</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+         body.night-mode {
+            background: radial-gradient(ellipse at top, #1b2735 0%, #090a0f 100%);;
+            color: #f5f5f5;
+            transition: background-color 0.3s, color 0.3s;
+            
+        }
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px;
+}
+
+.left-section {
+    flex: 2; /* More space for the itinerary and image */
+    display: flex;
+    flex-direction: column;
+}
+
+.right-section {
+    flex: 1; /* Less space for the map */
+}
+
+#map { 
+    height: 500px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px; /* Ensures gap between map and buttons */
+}
+
+a.buttn {
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none; /* Remove underline */
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+a.buttn:hover {
+    background-color: #444;
+}
+
+.buttons-container {
+    display: flex; /* Use flexbox to align items */
+    justify-content: center; /* Center the buttons */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px; /* Space above the buttons (if needed) */
+}
+
+.photo {
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.details {
+    margin-top: 20px;
+}
+
+.details h2, .details p {
+    margin-bottom: 10px;
+}
+
+.scroll-box {
+    max-height: 300px;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+
+/* Style for numbered markers */
+.leaflet-div-icon {
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 24px;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.tab-titles {
+    display: flex;
+    margin: 20px 0 40px;
+    transition: transform 0.5s;   
+}
+
+.tab-links {
+    margin-right: 50px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    transition: transform 0.5s;
+}
+
+.tab-links:hover {
+    color:#E1D14E;
+    transform: translateY(-5px);
+}
+
+.tab-links::after {
+    content: '';
+    width:0;
+    height: 3px;
+    color:#E1D14E;
+    background: #ff004f;
+    position:absolute;
+    left: 0;
+    bottom: -8px;
+    transition: 0.5s;
+}
+
+.tab-links.active-link::after {
+    width: 100%;
+}
+.tab-contents {
+    display: none;
+}
+
+.tab-contents.active-tab {
+    display: block;
+}
+/* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+    </style>
+</head>
+
+<body class="night-mode">
+    <div class="container">
+        <!-- Left section for photo and itinerary -->
+        <div class="left-section">
+            <h1>Amritsar Itinerary</h1>
+
+            <img src="{% static 'video/amritsar.jpg' %}" alt="Golden Temple" class="photo">
+
+            <!-- Scrollable itinerary section -->
+            <div class="about-col-2">
+                <div class="tab-titles">
+                    <p class="tab-links active-link" onclick="opentab(event, 'onedays'),oneday()">ONE DAY Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'threedays')">THREE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'fivedays')">FIVE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'sevendays')">SEVEN DAYS Itinerary</p>
+                </div>
+                <div class="tab-contents active-tab" id="onedays">
+                    <div class="scroll-box"> 
+                        <div class="details">
+                            <h2>Day 1 in Amritsar:</h2>
+                            <p><strong>08:00 AM:</strong> Begin your day with a hearty breakfast at <em>Kanha Sweets</em>, famous for its hot Parathas and Chai.This local eatery is a must-visit for authentic Punjabi breakfast.</p>
+                            <p><strong>10:00 AM:</strong> Head to the historic <em>Golden Temple</em>, the most iconic attraction in Amritsar.Witness the stunning architecture and soak in the serene atmosphere. Take a dip in the holy Sarovar Lake if desired.</p>
+                            <p><strong>12:30 PM:</strong> Enjoy a traditional Punjabi lunch at <em>Gurudwara Gobindgarh Sikh Heritage Museum & Restaurant</em>.</p>
+                            <p><strong>02:30 PM:</strong> Visit <em>Jallianwala Bagh</em>, the site of a significant historical event in India's freedom struggle. Explore the gardens and learn about the rich history behind this important landmark.</p>
+                            <p><strong>05:00 PM:</strong> Explore the bustling streets of the Old City and shop for souvenirs at local markets like <em>Hall Bazaar</em> and <em>Mohindra Market.</em> Haggle with vendors for intricately designed jewelry, embroidered textiles, and traditional Punjabi juttis (footwear).</p>
+                            <p><strong>07:00 PM:</strong> Experience a delicious dinner at <em>Bharawan Da Dhaba</em>, known for its delectable Amritsari Fish, Kulfi Faluda, and lively ambiance. Don't forget to try their famous Lassi.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="threedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'threedays'),threeone()">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'threedays'),threetwo()">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'threedays'),threethree()">Day 3</p>
+                    </div>
+                    <div class="scroll-box">
+                        <div class="details" id="day1-threedays">
+                            <h2>Day 1 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Kalu Ka Wayda</em> (known for its parathas and lassi)</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Golden Temple</em> and explore its beautiful complex.</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional Punjabi lunch at <em>Gobind Garh Fort Restaurant</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Jallianwala Bagh</em>, a historic site.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>The Spice Palace</em> for an authentic Indian cuisine experience.</p>
+                        </div>
+                        <div class="details" id="day2-threedays" style="display: none;">
+                            <h2>Day 2 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a hearty breakfast at <em>Bhagat Cafe</em> (famous for its Amritsari kulcha).</p>
+                            <p><strong>10:00 AM:</strong> Travel to <em>Wagah Border</em> to witness the Beating Retreat Ceremony.</p>
+                            <p><strong>1:00 PM:</strong> Have lunch at <em>Makhan Fish & Chicken Corner</em>, known for their delicious fish dishes.</p>
+                            <p><strong>2:30 PM:</strong> Visit <em>Maharaja Ranjit Singh Museum</em> to learn about the history of Amritsar.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Carving Elephant</em> for a fusion of Indian and continental flavors.</p>
+                        </div>
+                        <div class="details" id="day3-threedays" style="display: none;">
+                            <h2>Day 3 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Commence your day with a scrumptious breakfast at <em>Beera Chhole Bhature wale</em>.</p>
+                            <p><strong>10:00 AM:</strong> Explore the ancient ruins of <em>Durgiana Mandir</em> and <em>Tarn Taran Sahib</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a traditional Punjabi lunch at <em>Sarabhai's Kitchen</em>.</p>
+                            <p><strong>2:30 PM:</strong> Visit the stunning <em>Khalsa College</em>, famous for its architecture.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>Bharawan Da Dhaba</em>, known for its delicious vegetarian dishes and live music in the evening.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="fivedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'fivedays'),fiveone()">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'fivedays'),fivetwo()">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'fivedays'),fivethree()">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'fivedays'),fivefour()">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'fivedays'),fivefive()">Day 5</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-fivedays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a hearty Punjabi breakfast at <em>Kala Shah Kamaan</em> in Galia, Amritsar.</p>
+                            <p><strong>10:00 AM:</strong> Visit the iconic <em>Golden Temple</em> and explore its peaceful surroundings.</p>
+                            <p><strong>1:00 PM:</strong> Relish an authentic North Indian lunch at <em>Sarabhani Food Plaza</em>.</p>
+                            <p><strong>2:30 PM:</strong> Discover the historical significance of <em>Jallianwala Bagh</em>, a memorial to the Indian freedom struggle.</p>
+                            <p><strong>7:00 PM:</strong> Savor a delicious dinner at <em>The Great Kabab Factory</em>, offering an unforgettable dining experience with its delectable kababs.</p>
+                        </div>
+                        <div class="details" id="day2-fivedays" style="display: none;"> <!-- Hide other days by default -->
+                            <h2>Day 2 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a flavorful breakfast at <em>Bharawan Da Dhaba</em>, known for its mouth-watering parathas.</p>
+                            <p><strong>10:00 AM:</strong> Explore the rich history of Amritsar by visiting the <em>Maharaja Ranjit Singh Museum & Fort</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a delightful lunch at <em>Spice Palace</em>, offering a wide variety of Indian cuisine.</p>
+                            <p><strong>2:30 PM:</strong> Relax and admire the intricate carvings at the beautiful <em>Durgiana Temple</em>.</p>
+                            <p><strong>7:00 PM:</strong> End your day with a delicious Punjabi dinner at <em>Swagat Restaurant</em>.</p>
+                        </div>
+                        <div class="details" id="day3-fivedays" style="display: none;">
+                            <h2>Day 3 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a hearty breakfast at <em>Gobind Sagar Hotel</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit the peaceful and beautiful temple complex of <em>Tarn Taran Sahib</em>.</p>
+                            <p><strong>1:00 PM:</strong> Savor a delectable spread of Punjabi dishes at <em>Sher-e-Punjab</em>, Amritsar.</p>
+                            <p><strong>2:30 PM:</strong> Explore local markets like <em>Hall Bazaar</em> and shop for souvenirs.</p>
+                            <p><strong>7:00 PM:</strong> Enjoy a flavorful biryani for dinner at <em>Biryani Wali Haveli</em>.</p>
+                        </div>
+                        <div class="details" id="day4-fivedays" style="display: none;">
+                            <h2>Day 4 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Kickstart your day with traditional Punjabi dishes at <em>Amritsari Shivam</em>.</p>
+                            <p><strong>10:00 AM:</strong> Head to the <em>Wagah Border</em> to witness the spectacular Flag Lowering Ceremony.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Brothers Da Dhaba</em>, offering a variety of vegetarian dishes.</p>
+                            <p><strong>2:30 PM:</strong> Visit the renowned <em>Khalsa College</em> and admire its stunning architecture.</p>
+                            <p><strong>7:00 PM:</strong> End the day with an authentic Punjabi dinner at <em>Pind Balchuran</em>.</p>
+                        </div>
+                        <div class="details" id="day5-fivedays" style="display: none;">
+                            <h2>Day 5 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Treat yourself to a sweet start with breakfast at <em>Kanha Sweets</em>, Amritsar.</p>
+                            <p><strong>10:00 AM:</strong> Visit the historic <em>Akal Takht Sahib</em> and soak in its peaceful surroundings.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a hearty lunch at <em>Bhai Nihal Singh Ji Ka Dhaba</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore the charming <em>Ram Tirath Temple</em> and take a relaxing boat ride in the tank.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>Parikrma</em>, Amritsar, for a modern and unique dining experience.</p>
+                        </div>
+                    </div>
+                </div>                
+                <div class="tab-contents" id="sevendays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'sevendays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'sevendays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'sevendays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'sevendays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'sevendays')">Day 5</p>
+                        <p class="tab-links" onclick="openday(event, 'day6', 'sevendays')">Day 6</p>
+                        <p class="tab-links" onclick="openday(event, 'day7', 'sevendays')">Day 7</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-sevendays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a traditional Punjabi breakfast at <em>Kalo Da Dhaba</em>, famous for its local dishes.</p>
+                            <p><strong>10:00 AM:</strong> Visit the iconic <em>Golden Temple</em> and explore its complex. Attend the morning prayer for a serene experience.</p>
+                            <p><strong>1:00 PM:</strong> Savor a delicious lunch at <em>Bharawan Da Dhaba</em>, located near the Golden Temple, known for its Kulcha and Chole.</p>
+                            <p><strong>2:30 PM:</strong> Explore the historic <em>Jallianwala Bagh</em> and its museum.</p>
+                            <p><strong>7:00 PM:</strong> End your day with a fusion dinner at <em>Karma Cafe & Bistro</em>, known for its mix of European and Indian cuisine.</p>
+                        </div>
+                        <div class="details" id="day2-sevendays" style="display: none;">
+                            <h2>Day 2 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Start with a hearty breakfast at <em>Gobind Sagar Palace</em>; don’t miss their famous parathas.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Maharaja Ranjit Singh Museum</em> to learn about the rich history of Amritsar.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a traditional North Indian lunch at <em>Spice Palace</em>, near the museum.</p>
+                            <p><strong>2:30 PM:</strong> Relax at the beautiful <em>Durgiana Temple</em> and visit the nearby <em>Mata Mandir</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>The Pind Balchur</em> for an authentic Punjabi culinary experience.</p>
+                        </div>
+                        <div class="details" id="day3-sevendays" style="display: none;">
+                            <h2>Day 3 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with breakfast at <em>Amritsari Sweet Home</em>, famous for its sweets and refreshing lassi.</p>
+                            <p><strong>10:00 AM:</strong> Visit the sacred <em>Baba Atal Rai Temple</em>.</p>
+                            <p><strong>1:00 PM:</strong> Relish the famous chicken dishes at <em>Beera Chicken Center</em> for lunch.</p>
+                            <p><strong>2:30 PM:</strong> Spend the afternoon shopping at local markets like <em>Mall Road</em> and <em>Hall Bazaar</em>.</p>
+                            <p><strong>7:00 PM:</strong> End the day with a buffet dinner at <em>Barbeque Nation</em>, offering a mix of international and Indian cuisines.</p>
+                        </div>
+                        <div class="details" id="day4-sevendays" style="display: none;">
+                            <h2>Day 4 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a filling breakfast at <em>Sher-e-Punjab</em>; try their famous butter chicken.</p>
+                            <p><strong>10:00 AM:</strong> Visit the sacred <em>Tarn Taran Sahib</em> temple.</p>
+                            <p><strong>1:00 PM:</strong> Have lunch at <em>Brother’s Dhaba</em>, near Tarn Taran Sahib, famous for its paneer dishes.</p>
+                            <p><strong>2:30 PM:</strong> Explore the stunning architecture of <em>Khalsa College</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dine at <em>The Grand Hotel</em>, offering a variety of cuisines with a beautiful view.</p>
+                        </div>
+                        <div class="details" id="day5-sevendays" style="display: none;">
+                            <h2>Day 5 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Kickstart your day with breakfast at <em>Kanha Sweets</em>, known for their tasty samosas.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Wagah Border</em> and attend the flag-lowering ceremony.</p>
+                            <p><strong>1:00 PM:</strong> Have a traditional Rajasthani and Gujarati thali at <em>Maurya</em>, near Wagah Border.</p>
+                            <p><strong>2:30 PM:</strong> Relax at the <em>Central Sector Holiday Home</em> and unwind.</p>
+                            <p><strong>7:00 PM:</strong> Enjoy a delightful dinner at <em>The Bellevue by The Grand</em>, offering a fusion of European, Mediterranean, and Indian cuisines.</p>
+                        </div>
+                        <div class="details" id="day6-sevendays" style="display: none;">
+                            <h2>Day 6 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a famous Punjabi breakfast at <em>Kesar Da Dhaba</em>, renowned for its aloo tikki and chole.</p>
+                            <p><strong>10:00 AM:</strong> Visit the historic <em>Akal Takht Sahib</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a vegetarian lunch at <em>Ravi Residency</em>.</p>
+                            <p><strong>2:30 PM:</strong> Spend time in nature at the <em>Harike Wetland and Sanctuary</em>.</p>
+                            <p><strong>7:00 PM:</strong> End your day with a South Indian dinner at <em>Sagar Ratna</em>.</p>
+                        </div>
+                        <div class="details" id="day7-sevendays" style="display: none;">
+                            <h2>Day 7 in Amritsar:</h2>
+                            <p><strong>8:00 AM:</strong> Enjoy breakfast at <em>Bhagat Ka Dhaba</em>, famous for their parathas.</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Duleep Singh Museum</em> and learn about the royal heritage.</p>
+                            <p><strong>1:00 PM:</strong> Have lunch at <em>Chaupakia</em>, near the museum, known for its traditional Punjabi dishes.</p>
+                            <p><strong>2:30 PM:</strong> Spend the afternoon shopping for souvenirs in the local markets.</p>
+                            <p><strong>7:00 PM:</strong> Conclude your trip with a continental and Italian dinner at <em>Greenwoods</em>.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Right section for map -->
+        <div class="right-section">
+            <div id="map"></div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; Voyage Verse - 2024</p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+
+    <script>
+// Global variable to store the current map instance
+let currentMap;
+let darkModeLayer;
+let lightModeLayer;
+
+// Night Mode Toggle
+function toggleNightMode() {
+    const body = document.body;
+    const modeIcon = document.getElementById('modeIcon');
+    
+    // Toggle between day and night modes
+    body.classList.toggle('day-mode');
+    body.classList.toggle('night-mode');
+    
+    // Switch the map layers
+    if (body.classList.contains('day-mode')) {
+        map.removeLayer(darkModeLayer);
+        map.addLayer(lightModeLayer);
+        modeIcon.textContent = '☀️'; // Day mode icon
+    } else {
+        map.removeLayer(lightModeLayer);
+        map.addLayer(darkModeLayer);
+        modeIcon.textContent = '🌙'; // Night mode icon
+    }
+}
+
+// Function to switch between main itinerary tabs
+function opentab(event, tabname) {
+    const tabcontents = document.getElementsByClassName("tab-contents");
+    const tablinks = document.getElementsByClassName("tab-links");
+
+    // Hide all tab contents and remove active class from all tab links
+    for (let content of tabcontents) {
+        content.classList.remove("active-tab");
+    }
+    for (let link of tablinks) {
+        link.classList.remove("active-link");
+    }
+
+    // Show the selected tab content and mark the clicked tab as active
+    document.getElementById(tabname).classList.add("active-tab");
+    event.currentTarget.classList.add("active-link");
+
+    // Call the appropriate function based on the selected tab
+    switch(tabname) {
+        case "onedays":
+            oneday();
+            break;
+        case "threedays":
+            openday(event, 'day1', 'threedays');
+            break;
+        case "fivedays":
+            openday(event, 'day1', 'fivedays');
+            break;
+        case "sevendays":
+            openday(event, 'day1', 'sevendays');
+            break;
+    }
+}
+
+// Function to switch between days for multi-day itineraries
+function openday(event, day, itinerary) {
+    const details = document.querySelectorAll(`#${itinerary} .details`);
+    const dayTabs = document.querySelectorAll(`#${itinerary} .day-tabs .tab-links`);
+
+    // Hide all day contents and remove active class from all day tabs
+    for (let detail of details) {
+        detail.style.display = "none";
+    }
+    for (let tab of dayTabs) {
+        tab.classList.remove("active-link");
+    }
+
+    // Show the selected day's content and mark the clicked day tab as active
+    document.getElementById(`${day}-${itinerary}`).style.display = "block";
+    event.currentTarget.classList.add("active-link");
+
+    // Update the map based on the selected day and itinerary
+    updateMap(day, itinerary);
+}
+
+// Function to update the map based on the selected day and itinerary
+function updateMap(day, itinerary) {
+    // Clear the existing map
+    if (currentMap) {
+        currentMap.remove();
+    }
+
+    // Create a new map instance
+    currentMap = L.map('map', {
+        attributionControl: false
+    });
+
+    // Add the tile layer (dark mode by default)
+    darkModeLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    }).addTo(currentMap);
+
+    // Get the places data for the selected day and itinerary
+    const places = getPlacesData(day, itinerary);
+
+    // Add markers and create the route
+    let bounds = L.latLngBounds();
+    let coordinates = [];
+
+    places.forEach((place, index) => {
+        const marker = L.marker([place.lat, place.lng], {
+            icon: L.divIcon({
+                className: 'leaflet-div-icon',
+                html: (index + 1)
+            })
+        }).addTo(currentMap);
+
+        marker.bindPopup(`
+            <strong>${place.time}: ${place.name}</strong><br>
+            ${place.description}<br>
+            <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}" target="_blank">Go to Google Maps</a>
+        `);
+
+        coordinates.push([place.lat, place.lng]);
+        bounds.extend([place.lat, place.lng]);
+    });
+
+    // Add polyline connecting the places
+    L.polyline(coordinates, { color: 'blue', weight: 3 }).addTo(currentMap);
+
+    // Fit the map to show all markers
+    currentMap.fitBounds(bounds);
+}
+
+// Function to get places data based on the selected day and itinerary
+function getPlacesData(day, itinerary) {
+    const itineraryData = {
+        onedays: {
+            day1: [
+                {"name": "Kanha Sweets", "lat": 31.646305210676037, "lng":  74.87822088028527, "time": "08:00 AM", "description": "Begin your day with a hearty breakfast famous for its hot Parathas and Chai."},
+                {"name": "Golden Temple", "lat": 31.627265855135576, "lng":  74.86742295801469, "time": "10:00 AM", "description": "Head to the historic Golden Temple, the most iconic attraction in Amritsar."},
+                {"name": "Gurudwara Gobindgarh Sikh Heritage Museum & Restaurant", "lat": 31.62117769216828, "lng":  74.87708789010078, "time": "12:30 PM", "description": "Enjoy a traditional Punjabi lunch."},
+                {"name": "Jallianwala Bagh", "lat": 31.62085834213822, "lng": 74.8802084109693, "time": "02:30 PM", "description": "Visit Jallianwala Bagh, the site of a significant historical event in India's freedom struggle."},
+                {"name": "Hall Bazaar", "lat": 31.62778326475454, "lng":  74.87767797453617, "time": "05:00 PM", "description": "Explore the bustling streets of the Old City and shop for souvenirs."},
+                {"name": "Bharawan Da Dhaba", "lat": 31.62600644431685, "lng": 74.87760262097383, "time": "07:00 PM", "description": "Experience a delicious dinner known for its delectable Amritsari Fish, Kulfi Faluda, and lively ambiance."}
+            ]
+        },
+        threedays: {
+            day1: [
+                {"name": "Kalu Ka Wayda", "lat": 31.613194197014145, "lng":  74.79882044206518, "time": "08:00 AM", "description": "Start your day with a hearty breakfast (known for its parathas and lassi)"},
+                {"name": "Golden Temple", "lat": 31.6200, "lng": 74.8760, "time": "10:00 AM", "description": "Visit the Golden Temple and explore its beautiful complex."},
+                {"name": "Gobind Garh Fort Restaurant", "lat": 31.6337, "lng": 74.8723, "time": "01:00 PM", "description": "Savor a traditional Punjabi lunch."},
+                {"name": "Jallianwala Bagh", "lat": 31.6206, "lng": 74.8743, "time": "02:30 PM", "description": "Explore Jallianwala Bagh, a historic site."},
+                {"name": "The Spice Palace", "lat": 31.6380, "lng": 74.8660, "time": "07:00 PM", "description": "Dine for an authentic Indian cuisine experience."}
+            ],
+            day2: [
+                {"name": "Bhagat Cafe", "lat": 31.6339, "lng": 74.8735, "time": "08:00 AM", "description": "Begin your day with a hearty breakfast (famous for its Amritsari kulcha)."},
+                {"name": "Wagah Border", "lat": 31.6047, "lng": 74.5740, "time": "10:00 AM", "description": "Travel to Wagah Border to witness the Beating Retreat Ceremony."},
+                {"name": "Makhan Fish & Chicken Corner", "lat": 31.6377, "lng": 74.8654, "time": "01:00 PM", "description": "Have lunch, known for their delicious fish dishes."},
+                {"name": "Maharaja Ranjit Singh Museum", "lat": 31.6371, "lng": 74.8757, "time": "02:30 PM", "description": "Visit to learn about the history of Amritsar."},
+                {"name": "Carving Elephant", "lat": 31.6395, "lng": 74.8628, "time": "07:00 PM", "description": "Dinner for a fusion of Indian and continental flavors."}
+            ],
+            day3: [
+                {"name": "Beera Chhole Bhature wale", "lat": 31.6350, "lng": 74.8730, "time": "08:00 AM", "description": "Commence your day with a scrumptious breakfast."},
+                {"name": "Durgiana Mandir", "lat": 31.6342, "lng": 74.8888, "time": "10:00 AM", "description": "Explore the ancient ruins of Durgiana Mandir."},
+                {"name": "Sarabhai's Kitchen", "lat": 31.6385, "lng": 74.8645, "time": "01:00 PM", "description": "Enjoy a traditional Punjabi lunch."},
+                {"name": "Khalsa College", "lat": 31.6399, "lng": 74.8309, "time": "02:30 PM", "description": "Visit the stunning Khalsa College, famous for its architecture."},
+                {"name": "Bharawan Da Dhaba", "lat": 31.6175, "lng": 74.8690, "time": "07:00 PM", "description": "Dine, known for its delicious vegetarian dishes and live music in the evening."}
+            ]
+        },
+        fivedays: {
+            day1: [
+                {"name": "Kala Shah Kamaan", "lat": 31.6355, "lng": 74.8725, "time": "08:00 AM", "description": "Begin your day with a hearty Punjabi breakfast in Galia, Amritsar."},
+                {"name": "Golden Temple", "lat": 31.6200, "lng": 74.8760, "time": "10:00 AM", "description": "Visit the iconic Golden Temple and explore its peaceful surroundings."},
+                {"name": "Sarabhani Food Plaza", "lat": 31.6380, "lng": 74.8650, "time": "01:00 PM", "description": "Relish an authentic North Indian lunch."},
+                {"name": "Jallianwala Bagh", "lat": 31.6206, "lng": 74.8743, "time": "02:30 PM", "description": "Discover the historical significance of Jallianwala Bagh."},
+                {"name": "The Great Kabab Factory", "lat": 31.6390, "lng": 74.8635, "time": "07:00 PM", "description": "Savor a delicious dinner offering an unforgettable dining experience with its delectable kababs."}
+            ],
+            day2: [
+                {"name": "Bharawan Da Dhaba", "lat": 31.6205, "lng": 74.8765, "time": "08:00 AM", "description": "Start your day with a flavorful breakfast, known for its mouth-watering parathas."},
+                {"name": "Maharaja Ranjit Singh Museum & Fort", "lat": 31.6160, "lng": 74.8655, "time": "10:00 AM", "description": "Explore the rich history of Amritsar."},
+                {"name": "Spice Palace", "lat": 31.6340, "lng": 74.8620, "time": "01:00 PM", "description": "Enjoy a delightful lunch offering a wide variety of Indian cuisine."},
+                {"name": "Durgiana Temple", "lat": 31.6170, "lng": 74.8550, "time": "02:30 PM", "description": "Relax and admire the intricate carvings."},
+                {"name": "Swagat Restaurant", "lat": 31.6350, "lng": 74.8700, "time": "07:00 PM", "description": "End your day with a delicious Punjabi dinner."}
+            ],
+            day3: [
+                {"name": "Gobind Sagar Hotel", "lat": 31.6201, "lng": 74.8720, "time": "08:00 AM", "description": "Begin your day with a hearty breakfast."},
+                {"name": "Tarn Taran Sahib", "lat": 31.6067, "lng": 74.8232, "time": "10:00 AM", "description": "Visit the peaceful and beautiful temple complex."},
+                {"name": "Sher-e-Punjab", "lat": 31.6357, "lng": 74.8690, "time": "01:00 PM", "description": "Savor a delectable spread of Punjabi dishes."},
+                {"name": "Hall Bazaar", "lat": 31.6340, "lng": 74.8740, "time": "02:30 PM", "description": "Explore local markets and shop for souvenirs."},
+                {"name": "Biryani Wali Haveli", "lat": 31.6360, "lng": 74.8600, "time": "07:00 PM", "description": "Enjoy a flavorful biryani for dinner."}
+            ],
+            day4: [
+                {"name": "Amritsari Shivam", "lat": 31.6200, "lng": 74.8700, "time": "08:00 AM", "description": "Kickstart your day with traditional Punjabi dishes."},
+                {"name": "Wagah Border", "lat": 31.9980, "lng": 74.8170, "time": "10:00 AM", "description": "Witness the spectacular Flag Lowering Ceremony."},
+                {"name": "Brothers Da Dhaba", "lat": 31.6342, "lng": 74.8722, "time": "01:00 PM", "description": "Lunch offering a variety of vegetarian dishes."},
+                {"name": "Khalsa College", "lat": 31.6215, "lng": 74.8740, "time": "02:30 PM", "description": "Admire its stunning architecture."},
+                {"name": "Pind Balchuran", "lat": 31.6353, "lng": 74.8658, "time": "07:00 PM", "description": "End the day with an authentic Punjabi dinner."}
+            ],
+            day5: [
+                {"name": "Kanha Sweets", "lat": 31.6333, "lng": 74.8655, "time": "08:00 AM", "description": "Treat yourself to a sweet start with breakfast."},
+                {"name": "Akal Takht Sahib", "lat": 31.6201, "lng": 74.8730, "time": "10:00 AM", "description": "Visit the historic site and soak in its surroundings."},
+                {"name": "Bhai Nihal Singh Ji Ka Dhaba", "lat": 31.6350, "lng": 74.8610, "time": "01:00 PM", "description": "Enjoy a hearty lunch."},
+                {"name": "Ram Tirath Temple", "lat": 31.6320, "lng": 74.8820, "time": "02:30 PM", "description": "Explore and take a relaxing boat ride."},
+                {"name": "Parikrma", "lat": 31.6200, "lng": 74.8720, "time": "07:00 PM", "description": "Dine for a modern and unique experience."}
+            ]
+        },
+        sevendays: {
+            day1: [
+                {"name": "Kalo Da Dhaba", "lat": 31.6355, "lng": 74.8725, "time": "08:00 AM", "description": "Begin your day with a traditional Punjabi breakfast, famous for its local dishes."},
+                {"name": "Golden Temple", "lat": 31.6200, "lng": 74.8760, "time": "10:00 AM", "description": "Visit the iconic Golden Temple and explore its complex. Attend the morning prayer for a serene experience."},
+                {"name": "Bharawan Da Dhaba", "lat": 31.6205, "lng": 74.8750, "time": "01:00 PM", "description": "Savor a delicious lunch, known for its Kulcha and Chole."},
+                {"name": "Jallianwala Bagh", "lat": 31.6206, "lng": 74.8743, "time": "02:30 PM", "description": "Explore the historic site and its museum."},
+                {"name": "Karma Cafe & Bistro", "lat": 31.6340, "lng": 74.8650, "time": "07:00 PM", "description": "End your day with a fusion dinner known for its mix of European and Indian cuisine."}
+            ],
+            day2: [
+                {"name": "Gobind Sagar Palace", "lat": 31.6345, "lng": 74.8680, "time": "08:00 AM", "description": "Start with a hearty breakfast; don’t miss their famous parathas."},
+                {"name": "Maharaja Ranjit Singh Museum", "lat": 31.6160, "lng": 74.8655, "time": "10:00 AM", "description": "Learn about the rich history of Amritsar."},
+                {"name": "Spice Palace", "lat": 31.6340, "lng": 74.8620, "time": "01:00 PM", "description": "Enjoy a traditional North Indian lunch near the museum."},
+                {"name": "Durgiana Temple", "lat": 31.6170, "lng": 74.8550, "time": "02:30 PM", "description": "Relax and visit the nearby Mata Mandir."},
+                {"name": "The Pind Balchur", "lat": 31.6201, "lng": 74.8720, "time": "07:00 PM", "description": "Dine for an authentic Punjabi culinary experience."}
+            ],
+            day3: [
+                {"name": "Amritsari Sweet Home", "lat": 31.6215, "lng": 74.8695, "time": "08:00 AM", "description": "Begin your day with breakfast, famous for its sweets and refreshing lassi."},
+                {"name": "Baba Atal Rai Temple", "lat": 31.6199, "lng": 74.8742, "time": "10:00 AM", "description": "Visit the sacred temple."},
+                {"name": "Beera Chicken Center", "lat": 31.6350, "lng": 74.8610, "time": "01:00 PM", "description": "Relish the famous chicken dishes for lunch."},
+                {"name": "Mall Road", "lat": 31.6340, "lng": 74.8720, "time": "02:30 PM", "description": "Spend the afternoon shopping at local markets."},
+                {"name": "Barbeque Nation", "lat": 31.6357, "lng": 74.8700, "time": "07:00 PM", "description": "End the day with a buffet dinner, offering a mix of international and Indian cuisines."}
+            ],
+            day4: [
+                {"name": "Sher-e-Punjab", "lat": 31.6200, "lng": 74.8700, "time": "08:00 AM", "description": "Start your day with a filling breakfast; try their famous butter chicken."},
+                {"name": "Tarn Taran Sahib", "lat": 31.6067, "lng": 74.8232, "time": "10:00 AM", "description": "Visit the sacred temple."},
+                {"name": "Brother’s Dhaba", "lat": 31.6300, "lng": 74.8700, "time": "01:00 PM", "description": "Have lunch, famous for its paneer dishes."},
+                {"name": "Khalsa College", "lat": 31.6215, "lng": 74.8740, "time": "02:30 PM", "description": "Explore the stunning architecture."},
+                {"name": "The Grand Hotel", "lat": 31.6345, "lng": 74.8620, "time": "07:00 PM", "description": "Dine with a variety of cuisines and a beautiful view."}
+            ],
+            day5: [
+                {"name": "Kanha Sweets", "lat": 31.6333, "lng": 74.8655, "time": "08:00 AM", "description": "Kickstart your day with breakfast, known for their tasty samosas."},
+                {"name": "Wagah Border", "lat": 31.9980, "lng": 74.8170, "time": "10:00 AM", "description": "Attend the flag-lowering ceremony."},
+                {"name": "Maurya", "lat": 31.6320, "lng": 74.8220, "time": "01:00 PM", "description": "Have a traditional Rajasthani and Gujarati thali."},
+                {"name": "Central Sector Holiday Home", "lat": 31.6190, "lng": 74.8720, "time": "02:30 PM", "description": "Relax and unwind."},
+                {"name": "The Bellevue by The Grand", "lat": 31.6200, "lng": 74.8720, "time": "07:00 PM", "description": "Enjoy a delightful dinner offering a fusion of cuisines."}
+            ],
+            day6: [
+                {"name": "Kesar Da Dhaba", "lat": 31.6230, "lng": 74.8745, "time": "08:00 AM", "description": "Begin your day with a famous Punjabi breakfast."},
+                {"name": "Akal Takht Sahib", "lat": 31.6201, "lng": 74.8730, "time": "10:00 AM", "description": "Visit the historic site."},
+                {"name": "Ravi Residency", "lat": 31.6340, "lng": 74.8700, "time": "01:00 PM", "description": "Enjoy a vegetarian lunch."},
+                {"name": "Harike Wetland and Sanctuary", "lat": 31.5530, "lng": 74.6850, "time": "02:30 PM", "description": "Spend time in nature."},
+                {"name": "Sagar Ratna", "lat": 31.6350, "lng": 74.8650, "time": "07:00 PM", "description": "End your day with a South Indian dinner."}
+            ],
+            day7: [
+                {"name": "Bhagat Ka Dhaba", "lat": 31.6345, "lng": 74.8700, "time": "08:00 AM", "description": "Enjoy breakfast, famous for their parathas."},
+                {"name": "Duleep Singh Museum", "lat": 31.6170, "lng": 74.8730, "time": "10:00 AM", "description": "Learn about the royal heritage."},
+                {"name": "Chaupakia", "lat": 31.6352, "lng": 74.8705, "time": "01:00 PM", "description": "Have lunch, known for its traditional Punjabi dishes."},
+                {"name": "Local Markets", "lat": 31.6340, "lng": 74.8720, "time": "02:30 PM", "description": "Spend the afternoon shopping for souvenirs."},
+                {"name": "Greenwoods", "lat": 31.6355, "lng": 74.8680, "time": "07:00 PM", "description": "Conclude your trip with a continental and Italian dinner."}
+            ]
+        }
+    };
+    return itineraryData[itinerary][day] || [];
+}
+
+// Initialize the default view (one day itinerary)
+document.addEventListener("DOMContentLoaded", function() {
+    oneday();
+});
+
+// One day itinerary function
+function oneday() {
+    updateMap('day1', 'onedays');
+}
+
+// Helper functions for other itineraries
+function threeone() { updateMap('day1', 'threedays'); }
+function threetwo() { updateMap('day2', 'threedays'); }
+function threethree() { updateMap('day3', 'threedays'); }
+
+function fiveone() { updateMap('day1', 'fivedays'); }
+function fivetwo() { updateMap('day2', 'fivedays'); }
+function fivethree() { updateMap('day3', 'fivedays'); }
+function fivefour() { updateMap('day4', 'fivedays'); }
+function fivefive() { updateMap('day5', 'fivedays'); }
+
+document.getElementById('profile-pic').addEventListener('click', function() {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const profileDetails = document.getElementById('profile-details');
+            const settingsMenu = document.getElementById('settings-menu');
+
+            if (dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+                profileDetails.style.display = 'none';
+                settingsMenu.style.display = 'none';
+            } else {
+                dropdownMenu.style.display = 'block';
+            }
+        });
+
+        document.getElementById('show-profile').addEventListener('click', function(event) {
+            event.stopPropagation();
+            const profileDetails = document.getElementById('profile-details');
+            profileDetails.style.display = profileDetails.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('close-profile').addEventListener('click', function() {
+            const profileDetails = document.getElementById('profile-details');
+            profileDetails.style.display = 'none';
+        });
+
+        document.getElementById('upload-photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-pic').src = e.target.result;
+                    document.getElementById('profile-summary-pic').src = e.target.result;
+                    document.getElementById('profile-details-pic').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelector('#settings-icon').addEventListener('click', function() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('close-settings').addEventListener('click', function() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.style.display = 'none';
+        });
+
+        window.onclick = function(event) {
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const profileDetails = document.getElementById('profile-details');
+            const settingsMenu = document.getElementById('settings-menu');
+            
+            if (!event.target.matches('#profile-pic') && !event.target.closest('.dropdown-menu')) {
+                dropdownMenu.style.display = 'none';
+                profileDetails.style.display = 'none';
+                settingsMenu.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

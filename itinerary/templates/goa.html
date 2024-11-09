@@ -1,0 +1,711 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goa Itinerary</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+         body.night-mode {
+            background: radial-gradient(ellipse at top, #1b2735 0%, #090a0f 100%);;
+            color: #f5f5f5;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px;
+}
+
+.left-section {
+    flex: 2; /* More space for the itinerary and image */
+    display: flex;
+    flex-direction: column;
+}
+
+.right-section {
+    flex: 1; /* Less space for the map */
+}
+
+#map { 
+    height: 500px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px; /* Ensures gap between map and buttons */
+}
+
+a.buttn {
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none; /* Remove underline */
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+a.buttn:hover {
+    background-color: #444;
+}
+
+.buttons-container {
+    display: flex; /* Use flexbox to align items */
+    justify-content: center; /* Center the buttons */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px; /* Space above the buttons (if needed) */
+}
+
+.photo {
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.details {
+    margin-top: 20px;
+}
+
+.details h2, .details p {
+    margin-bottom: 10px;
+}
+
+.scroll-box {
+    max-height: 300px;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+
+/* Style for numbered markers */
+.leaflet-div-icon {
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 24px;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.tab-titles {
+    display: flex;
+    margin: 20px 0 40px;
+    transition: transform 0.5s;   
+}
+
+.tab-links {
+    margin-right: 50px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    transition: transform 0.5s;
+}
+
+.tab-links:hover {
+    color:#E1D14E;
+    transform: translateY(-5px);
+}
+
+.tab-links::after {
+    content: '';
+    width:0;
+    height: 3px;
+    color:#E1D14E;
+    background: #ff004f;
+    position:absolute;
+    left: 0;
+    bottom: -8px;
+    transition: 0.5s;
+}
+
+.tab-links.active-link::after {
+    width: 100%;
+}
+.tab-contents {
+    display: none;
+}
+
+.tab-contents.active-tab {
+    display: block;
+}
+/* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+    </style>
+</head>
+
+<body class="night-mode">
+    <div class="container">
+        <!-- Left section for photo and itinerary -->
+        <div class="left-section">
+            <h1>Goa Itinerary</h1>
+
+            <img src="{% static 'video/goa.jpg' %}" alt="Golden Temple" class="photo">
+
+            <!-- Scrollable itinerary section -->
+            <div class="about-col-2">
+                <div class="tab-titles">
+                    <p class="tab-links active-link" onclick="opentab(event, 'onedays'),oneday()">ONE DAY Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'threedays')">THREE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'fivedays')">FIVE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'sevendays')">SEVEN DAYS Itinerary</p>
+                </div>
+                <div class="tab-contents active-tab" id="onedays">
+                    <div class="scroll-box"> 
+                        <div class="details">
+                            <h2>Day 1 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a hearty breakfast at <em>Thothamani Restaurant</em> (near Panjim), famous for its Goan specialties like pork vindaloo and serradura.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Fort Aguada</em>, a Portuguese fortress located in Sinquerim, known for its stunning views of the Arabian Sea and lighthouse.</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional Goan lunch at <em>Ritz Classic</em> (near Dona Paula), offering an array of seafood dishes, rice bowls, and regional delicacies.</p>
+                            <p><strong>2:30 PM:</strong> Explore Old Goa's historical sites, including <em>Basilica of Bom Jesus</em>, <em>Se Cathedral</em>, and <em>Church of St. Francis of Assisi</em>.</p>
+                            <p><strong>7:00 PM:</strong> Experience a delightful dinner at <em>Gunpowder</em> (Fontainhas), a popular restaurant featuring authentic South Indian dishes with a modern twist. Try their dosas, idlis, or fish fry.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="threedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'threedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'threedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'threedays')">Day 3</p>
+                    </div>
+                    <div class="scroll-box">
+                        <div class="details" id="day1-threedays">
+                            <h2>Day 1 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Thick Shake Factory</em>, Panjim, known for their pancakes and omelets.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Fort Aguada</em>, Sinquerim, to explore the historic Portuguese fort and enjoy the scenic views.</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional Goan lunch at <em>Gunpowder</em>, Dona Paula, famous for its Goan curries and seafood dishes.</p>
+                            <p><strong>2:30 PM:</strong> Explore Old Goa Churches, including <em>Basilica of Bom Jesus</em>, <em>St. Augustine Tower</em>, and <em>St. Francis of Assisi</em>.</p>
+                            <p><strong>7:00 PM:</strong> Enjoy dinner at <em>Ristorante Mamma Maria</em>, Fontainhas, offering authentic Italian cuisine.</p>
+                        </div>
+                        <div class="details" id="day2-threedays" style="display: none;">
+                            <h2>Day 2 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Begin with breakfast at <em>Café Lila Ashwem</em>, Anjuna, known for their pancakes and fresh juices.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Dudhsagar Waterfalls</em> and trek through the beautiful trails.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Thirsty Monkey</em>, Palolem, serving international and Indian cuisine.</p>
+                            <p><strong>2:30 PM:</strong> Relax and unwind at <em>Colva</em> or <em>Benaulim Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>Fisherman's Wharf</em>, Dona Paula, with a variety of seafood options.</p>
+                        </div>
+                        <div class="details" id="day3-threedays" style="display: none;">
+                            <h2>Day 3 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start with breakfast at <em>Gunpowder</em>, Calangute, offering delicious Goan meals.</p>
+                            <p><strong>10:00 AM:</strong> Head to <em>Arambol Beach</em> and visit the <em>Saturday Night Market</em> for shopping and activities.</p>
+                            <p><strong>1:00 PM:</strong> Have lunch at <em>Brittos</em>, Morjim, known for their seafood grills.</p>
+                            <p><strong>2:30 PM:</strong> Explore the natural beauty of <em>Morjim Beach</em> and visit the nearby bird sanctuary.</p>
+                            <p><strong>7:00 PM:</strong> End your day with dinner at <em>Zest Floating Restaurant</em>, Sinquerim, enjoying the sunset while indulging in local delicacies.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="fivedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'fivedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'fivedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'fivedays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'fivedays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'fivedays')">Day 5</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-fivedays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Thirsty Monk Cafe</em> (Calangute).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Fort Aguada</em> (Sinquerim).</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a traditional Goan lunch at <em>Martins Corner</em> (Bardez).</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Dudhsagar Waterfalls</em> (Mollem National Park).</p>
+                            <p><strong>7:00 PM:</strong> Savor a delicious dinner at <em>Gunpowder</em> (Panjim).</p>
+                        </div>
+                        <div class="details" id="day2-fivedays" style="display: none;"> <!-- Hide other days by default -->
+                            <h2>Day 2 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a hearty breakfast at <em>Antique & Co. Bakery</em> (Fontainhas).</p>
+                            <p><strong>10:00 AM:</strong> Discover Old Goa Churches, including <em>Se Cathedral</em>, <em>Basilica of Bom Jesus</em>, and <em>Church of St. Francis of Assisi</em>.</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional Goan meal at <em>Gaurav Cabral's</em> (Panjim).</p>
+                            <p><strong>2:30 PM:</strong> Relax at <em>Dona Paula Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Experience a delectable dinner at <em>Fisherman's Wharf</em> (Mobor).</p>
+                        </div>
+                        <div class="details" id="day3-fivedays" style="display: none;">
+                            <h2>Day 3 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Ritz Classic</em> (Donapaula).</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Mangesh Temple</em> (Ponda) and <em>Mahadev Temple</em> (Tambdi Surla).</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional Goan lunch at <em>Rasoi</em> (Benaulim).</p>
+                            <p><strong>2:30 PM:</strong> Spend some time at <em>Colva Beach</em> or visit <em>Cabo De Rama Fort</em>.</p>
+                            <p><strong>7:00 PM:</strong> Enjoy a delightful dinner at <em>Ourem Casa</em> (Majora).</p>
+                        </div>
+                        <div class="details" id="day4-fivedays" style="display: none;">
+                            <h2>Day 4 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a hearty breakfast at <em>Cinnamon</em> (Anjuna).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Arambol Beach</em> and the <em>Anjuna Flea Market</em>.</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional Goan lunch at <em>Spice Affair</em> (Anjuna).</p>
+                            <p><strong>2:30 PM:</strong> Take a sunset cruise on the <em>Mandovi River</em>.</p>
+                            <p><strong>7:00 PM:</strong> Experience a delicious dinner at <em>Thousand Islands Restaurant</em> (Chorao).</p>
+                        </div>
+                        <div class="details" id="day5-fivedays" style="display: none;">
+                            <h2>Day 5 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Artjuna Cafe</em> (Arambol).</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Morjim Beach</em> and <em>Mandrem Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy a traditional Goan lunch at <em>Gunpowder</em> (Ashwem).</p>
+                            <p><strong>2:30 PM:</strong> Spend some time shopping for souvenirs in <em>Mapusa Market</em>.</p>
+                            <p><strong>7:00 PM:</strong> Experience a delightful farewell dinner at <em>The Lagoona</em> (Calangute).</p>
+                        </div>
+                    </div>
+                </div>                
+                <div class="tab-contents" id="sevendays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'sevendays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'sevendays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'sevendays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'sevendays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'sevendays')">Day 5</p>
+                        <p class="tab-links" onclick="openday(event, 'day6', 'sevendays')">Day 6</p>
+                        <p class="tab-links" onclick="openday(event, 'day7', 'sevendays')">Day 7</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-sevendays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with breakfast at <em>Gunpowder</em> (Fort Aguada Road, Sinquerim).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Fort Aguada</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Thirsty Bear Brewery</em> (Mobor, Salcette).</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Dudhsagar Waterfalls</em> or <em>Molangum Dam</em>.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>Martin's Corner</em> (Dona Paula, Panjim).</p>
+                        </div>
+                        <div class="details" id="day2-sevendays" style="display: none;">
+                            <h2>Day 2 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Begin with breakfast at <em>Ritz Classic</em> (Porvorim).</p>
+                            <p><strong>10:00 AM:</strong> Visit the Old Goa Churches, including <em>Basilica of Bom Jesus</em>, <em>Se Cathedral</em>, and <em>Church of St. Francis of Assisi</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Ginger Tree</em> (Torda, Sanguem).</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Mormugao Fort</em> or <em>Reis Magos Fort</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Antares</em> (Sangolda, Bardez).</p>
+                        </div>
+                        <div class="details" id="day3-sevendays" style="display: none;">
+                            <h2>Day 3 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Have breakfast at <em>Café Del Rei</em> (Calangute).</p>
+                            <p><strong>10:00 AM:</strong> Visit the <em>Arpora Ruins</em> or relax at <em>Anjuna Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Gunpowder</em> (Anjuna).</p>
+                            <p><strong>2:30 PM:</strong> Relax at <em>Morjim Beach</em> or <em>Ashwem Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Fisherman's Wharf</em> (Reis Magos, Bardez).</p>
+                        </div>
+                        <div class="details" id="day4-sevendays" style="display: none;">
+                            <h2>Day 4 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with breakfast at <em>Casa De Tres Porcos</em> (Benaulim).</p>
+                            <p><strong>10:00 AM:</strong> Relax at <em>Colva Beach</em> or <em>Majorda Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Josie's by the Sea</em> (Betalbatim).</p>
+                            <p><strong>2:30 PM:</strong> Visit <em>Cabo de Rama Fort</em> or <em>Galgibaga Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Thousand Islands</em> (Cansaulim, Salcette).</p>
+                        </div>
+                        <div class="details" id="day5-sevendays" style="display: none;">
+                            <h2>Day 5 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Begin with breakfast at <em>Simpaus</em> (Dabolim).</p>
+                            <p><strong>10:00 AM:</strong> Explore <em>Mahadev Temple</em> or the <em>Dudh Sagar Elephant Sanctuary</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Govinda's</em> (Panaji, Ingolem).</p>
+                            <p><strong>2:30 PM:</strong> Relax at <em>Dona Paula Bay</em> or <em>Miramar Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Enjoy dinner at <em>The Kitchen at Infantaria</em> (Fontainhas, Panjim).</p>
+                        </div>
+                        <div class="details" id="day6-sevendays" style="display: none;">
+                            <h2>Day 6 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with breakfast at <em>Artjuna Cafe</em> (Ashvem, Bardez).</p>
+                            <p><strong>10:00 AM:</strong> Embark on a <em>Dudhsagar Trek</em> or explore the <em>Netravali Wildlife Sanctuary</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Santosh Restaurant</em> (Cavelossim, Salcette).</p>
+                            <p><strong>2:30 PM:</strong> Relax at <em>Betalbatim Beach</em> or <em>Benaulim Beach</em>.</p>
+                            <p><strong>7:00 PM:</strong> Have dinner at <em>Fisherman's Wharf II</em> (River Mandovi, Panjim).</p>
+                        </div>
+                        <div class="details" id="day7-sevendays" style="display: none;">
+                            <h2>Day 7 in Goa:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with breakfast at <em>Artjuna Cafe</em> (Ashvem, Bardez).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Grand Island</em> or relax at <em>Palolem Beach</em>.</p>
+                            <p><strong>1:00 PM:</strong> Enjoy lunch at <em>Ruchira</em> (Major Ghat, Salcette).</p>
+                            <p><strong>2:30 PM:</strong> Shop at <em>Calangute Market</em> or <em>Mapusa Market</em>.</p>
+                            <p><strong>7:00 PM:</strong> End your trip with a farewell dinner at <em>Gunpowder</em> (Fort Aguada Road, Sinquerim).</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Right section for map -->
+        <div class="right-section">
+            <div id="map"></div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; Voyage Verse - 2024</p>
+    </footer>
+
+     <!-- Leaflet JS -->
+     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+ 
+     <script>
+ // Global variable to store the current map instance
+ let currentMap;
+ let darkModeLayer;
+ let lightModeLayer;
+ 
+ // Night Mode Toggle
+ function toggleNightMode() {
+     const body = document.body;
+     const modeIcon = document.getElementById('modeIcon');
+     
+     // Toggle between day and night modes
+     body.classList.toggle('day-mode');
+     body.classList.toggle('night-mode');
+     
+     // Switch the map layers
+     if (body.classList.contains('day-mode')) {
+         map.removeLayer(darkModeLayer);
+         map.addLayer(lightModeLayer);
+         modeIcon.textContent = '☀️'; // Day mode icon
+     } else {
+         map.removeLayer(lightModeLayer);
+         map.addLayer(darkModeLayer);
+         modeIcon.textContent = '🌙'; // Night mode icon
+     }
+ }
+ 
+ // Function to switch between main itinerary tabs
+ function opentab(event, tabname) {
+     const tabcontents = document.getElementsByClassName("tab-contents");
+     const tablinks = document.getElementsByClassName("tab-links");
+ 
+     // Hide all tab contents and remove active class from all tab links
+     for (let content of tabcontents) {
+         content.classList.remove("active-tab");
+     }
+     for (let link of tablinks) {
+         link.classList.remove("active-link");
+     }
+ 
+     // Show the selected tab content and mark the clicked tab as active
+     document.getElementById(tabname).classList.add("active-tab");
+     event.currentTarget.classList.add("active-link");
+ 
+     // Call the appropriate function based on the selected tab
+     switch(tabname) {
+         case "onedays":
+             oneday();
+             break;
+         case "threedays":
+             openday(event, 'day1', 'threedays');
+             break;
+         case "fivedays":
+             openday(event, 'day1', 'fivedays');
+             break;
+         case "sevendays":
+             openday(event, 'day1', 'sevendays');
+             break;
+     }
+ }
+ 
+ // Function to switch between days for multi-day itineraries
+ function openday(event, day, itinerary) {
+     const details = document.querySelectorAll(`#${itinerary} .details`);
+     const dayTabs = document.querySelectorAll(`#${itinerary} .day-tabs .tab-links`);
+ 
+     // Hide all day contents and remove active class from all day tabs
+     for (let detail of details) {
+         detail.style.display = "none";
+     }
+     for (let tab of dayTabs) {
+         tab.classList.remove("active-link");
+     }
+ 
+     // Show the selected day's content and mark the clicked day tab as active
+     document.getElementById(`${day}-${itinerary}`).style.display = "block";
+     event.currentTarget.classList.add("active-link");
+ 
+     // Update the map based on the selected day and itinerary
+     updateMap(day, itinerary);
+ }
+ 
+ // Function to update the map based on the selected day and itinerary
+ function updateMap(day, itinerary) {
+     // Clear the existing map
+     if (currentMap) {
+         currentMap.remove();
+     }
+ 
+     // Create a new map instance
+     currentMap = L.map('map', {
+         attributionControl: false
+     });
+ 
+     // Add the tile layer (dark mode by default)
+     darkModeLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+         maxZoom: 20,
+         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+     }).addTo(currentMap);
+ 
+     // Get the places data for the selected day and itinerary
+     const places = getPlacesData(day, itinerary);
+ 
+     // Add markers and create the route
+     let bounds = L.latLngBounds();
+     let coordinates = [];
+ 
+     places.forEach((place, index) => {
+         const marker = L.marker([place.lat, place.lng], {
+             icon: L.divIcon({
+                 className: 'leaflet-div-icon',
+                 html: (index + 1)
+             })
+         }).addTo(currentMap);
+ 
+         marker.bindPopup(`
+             <strong>${place.time}: ${place.name}</strong><br>
+             ${place.description}<br>
+             <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}" target="_blank">Go to Google Maps</a>
+         `);
+ 
+         coordinates.push([place.lat, place.lng]);
+         bounds.extend([place.lat, place.lng]);
+     });
+ 
+     // Add polyline connecting the places
+     L.polyline(coordinates, { color: 'blue', weight: 3 }).addTo(currentMap);
+ 
+     // Fit the map to show all markers
+     currentMap.fitBounds(bounds);
+ }
+ 
+ // Function to get places data based on the selected day and itinerary
+ function getPlacesData(day, itinerary) {
+     const itineraryData = {
+         onedays: {
+             day1:[
+                {"name": "Thothamani Restaurant", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin your day with a hearty breakfast at Thothamani Restaurant (near Panjim), famous for its Goan specialties like pork vindaloo and serradura."},
+                {"name": "Fort Aguada", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Fort Aguada, a Portuguese fortress located in Sinquerim, known for its stunning views of the Arabian Sea and lighthouse."},
+                {"name": "Ritz Classic", "lat": null, "lng": null, "time": "01:00 PM", "description": "Savor a traditional Goan lunch at Ritz Classic (near Dona Paula), offering an array of seafood dishes, rice bowls, and regional delicacies."},
+                {"name": "Old Goa", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Old Goa's historical sites, including Basilica of Bom Jesus, Se Cathedral, and Church of St. Francis of Assisi."},
+                {"name": "Gunpowder", "lat": null, "lng": null, "time": "07:00 PM", "description": "Experience a delightful dinner at Gunpowder (Fontainhas), featuring authentic South Indian dishes with a modern twist. Try their dosas, idlis, or fish fry."}
+            ],
+        },
+         threedays: {
+                day1: [
+                    {"name": "Thick Shake Factory", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with a hearty breakfast at Thick Shake Factory, Panjim, known for their pancakes and omelets."},
+                    {"name": "Fort Aguada", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Fort Aguada, Sinquerim, to explore the historic Portuguese fort and enjoy the scenic views."},
+                    {"name": "Gunpowder", "lat": null, "lng": null, "time": "01:00 PM", "description": "Savor a traditional Goan lunch at Gunpowder, Dona Paula, famous for its Goan curries and seafood dishes."},
+                    {"name": "Old Goa Churches", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Old Goa Churches, including Basilica of Bom Jesus, St. Augustine Tower, and St. Francis of Assisi."},
+                    {"name": "Ristorante Mamma Maria", "lat": null, "lng": null, "time": "07:00 PM", "description": "Enjoy dinner at Ristorante Mamma Maria, Fontainhas, offering authentic Italian cuisine."}
+                ],
+                day2: [
+                    {"name": "Café Lila Ashwem", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin with breakfast at Café Lila Ashwem, Anjuna, known for their pancakes and fresh juices."},
+                    {"name": "Dudhsagar Waterfalls", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Dudhsagar Waterfalls and trek through the beautiful trails."},
+                    {"name": "Thirsty Monkey", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy lunch at Thirsty Monkey, Palolem, serving international and Indian cuisine."},
+                    {"name": "Colva Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Relax and unwind at Colva or Benaulim Beach."},
+                    {"name": "Fisherman's Wharf", "lat": null, "lng": null, "time": "07:00 PM", "description": "Have dinner at Fisherman's Wharf, Dona Paula, with a variety of seafood options."}
+                ],
+                day3: [
+                    {"name": "Gunpowder", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start with breakfast at Gunpowder, Calangute, offering delicious Goan meals."},
+                    {"name": "Arambol Beach", "lat": null, "lng": null, "time": "10:00 AM", "description": "Head to Arambol Beach and visit the Saturday Night Market for shopping and activities."},
+                    {"name": "Brittos", "lat": null, "lng": null, "time": "01:00 PM", "description": "Have lunch at Brittos, Morjim, known for their seafood grills."},
+                    {"name": "Morjim Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the natural beauty of Morjim Beach and visit the nearby bird sanctuary."},
+                    {"name": "Zest Floating Restaurant", "lat": null, "lng": null, "time": "07:00 PM", "description": "End your day with dinner at Zest Floating Restaurant, Sinquerim, enjoying the sunset while indulging in local delicacies."}
+                ],
+            },
+         fivedays: {
+            day1: [
+                {"name": "Thirsty Monk Cafe", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with a hearty breakfast at Thirsty Monk Cafe (Calangute)."},
+                {"name": "Fort Aguada", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Fort Aguada (Sinquerim)."},
+                {"name": "Martins Corner", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy a traditional Goan lunch at Martins Corner (Bardez)."},
+                {"name": "Dudhsagar Waterfalls", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Dudhsagar Waterfalls (Mollem National Park)."},
+                {"name": "Gunpowder", "lat": null, "lng": null, "time": "07:00 PM", "description": "Savor a delicious dinner at Gunpowder (Panjim)."}
+            ],
+            day2: [
+                {"name": "Antique & Co. Bakery", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin your day with a hearty breakfast at Antique & Co. Bakery (Fontainhas)."},
+                {"name": "Old Goa Churches", "lat": null, "lng": null, "time": "10:00 AM", "description": "Discover Old Goa Churches, including Se Cathedral, Basilica of Bom Jesus, and Church of St. Francis of Assisi."},
+                {"name": "Gaurav Cabral's", "lat": null, "lng": null, "time": "01:00 PM", "description": "Savor a traditional Goan meal at Gaurav Cabral's (Panjim)."},
+                {"name": "Dona Paula Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Relax at Dona Paula Beach."},
+                {"name": "Fisherman's Wharf", "lat": null, "lng": null, "time": "07:00 PM", "description": "Experience a delectable dinner at Fisherman's Wharf (Mobor)."}
+            ],
+            day3: [
+                {"name": "Ritz Classic", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with a hearty breakfast at Ritz Classic (Donapaula)."},
+                {"name": "Mangesh Temple", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Mangesh Temple (Ponda) and Mahadev Temple (Tambdi Surla)."},
+                {"name": "Rasoi", "lat": null, "lng": null, "time": "01:00 PM", "description": "Savor a traditional Goan lunch at Rasoi (Benaulim)."},
+                {"name": "Colva Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Spend some time at Colva Beach or visit Cabo De Rama Fort."},
+                {"name": "Ourem Casa", "lat": null, "lng": null, "time": "07:00 PM", "description": "Enjoy a delightful dinner at Ourem Casa (Majora)."}
+            ],
+            day4: [
+                {"name": "Cinnamon", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin your day with a hearty breakfast at Cinnamon (Anjuna)."},
+                {"name": "Arambol Beach", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Arambol Beach and the Anjuna Flea Market."},
+                {"name": "Spice Affair", "lat": null, "lng": null, "time": "01:00 PM", "description": "Savor a traditional Goan lunch at Spice Affair (Anjuna)."},
+                {"name": "Mandovi River", "lat": null, "lng": null, "time": "02:30 PM", "description": "Take a sunset cruise on the Mandovi River."},
+                {"name": "Thousand Islands Restaurant", "lat": null, "lng": null, "time": "07:00 PM", "description": "Experience a delicious dinner at Thousand Islands Restaurant (Chorao)."}
+            ],
+            day5: [
+                {"name": "Artjuna Cafe", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with a hearty breakfast at Artjuna Cafe (Arambol)."},
+                {"name": "Morjim Beach", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Morjim Beach and Mandrem Beach."},
+                {"name": "Gunpowder", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy a traditional Goan lunch at Gunpowder (Ashwem)."},
+                {"name": "Mapusa Market", "lat": null, "lng": null, "time": "02:30 PM", "description": "Spend some time shopping for souvenirs in Mapusa Market."},
+                {"name": "The Lagoona", "lat": null, "lng": null, "time": "07:00 PM", "description": "Experience a delightful farewell dinner at The Lagoona (Calangute)."}
+            ]
+
+        },
+         sevendays: {
+            day1: [
+                {"name": "Gunpowder", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with breakfast at Gunpowder (Fort Aguada Road, Sinquerim)."},
+                {"name": "Fort Aguada", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Fort Aguada."},
+                {"name": "Thirsty Bear Brewery", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy lunch at Thirsty Bear Brewery (Mobor, Salcette)."},
+                {"name": "Dudhsagar Waterfalls", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Dudhsagar Waterfalls or Molangum Dam."},
+                {"name": "Martin's Corner", "lat": null, "lng": null, "time": "07:00 PM", "description": "Have dinner at Martin's Corner (Dona Paula, Panjim)."}
+            ],
+            day2: [
+                {"name": "Ritz Classic", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin with breakfast at Ritz Classic (Porvorim)."},
+                {"name": "Old Goa Churches", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the Old Goa Churches, including Basilica of Bom Jesus, Se Cathedral, and Church of St. Francis of Assisi."},
+                {"name": "Ginger Tree", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Ginger Tree (Torda, Sanguem)."},
+                {"name": "Mormugao Fort", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Mormugao Fort or Reis Magos Fort."},
+                {"name": "Antares", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Antares (Sangolda, Bardez)."}
+            ],
+            day3: [
+                {"name": "Café Del Rei", "lat": null, "lng": null, "time": "08:00 AM", "description": "Have breakfast at Café Del Rei (Calangute)."},
+                {"name": "Arpora Ruins", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the Arpora Ruins or relax at Anjuna Beach."},
+                {"name": "Gunpowder", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy lunch at Gunpowder (Anjuna)."},
+                {"name": "Morjim Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Relax at Morjim Beach or Ashwem Beach."},
+                {"name": "Fisherman's Wharf", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Fisherman's Wharf (Reis Magos, Bardez)."}
+            ],
+            day4: [
+                {"name": "Casa De Tres Porcos", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with breakfast at Casa De Tres Porcos (Benaulim)."},
+                {"name": "Colva Beach", "lat": null, "lng": null, "time": "10:00 AM", "description": "Relax at Colva Beach or Majorda Beach."},
+                {"name": "Josie's by the Sea", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Josie's by the Sea (Betalbatim)."},
+                {"name": "Cabo de Rama Fort", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit Cabo de Rama Fort or Galgibaga Beach."},
+                {"name": "Thousand Islands", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Thousand Islands (Cansaulim, Salcette)."}
+            ],
+            day5: [
+                {"name": "Simpaus", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin with breakfast at Simpaus (Dabolim)."},
+                {"name": "Mahadev Temple", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore Mahadev Temple or the Dudh Sagar Elephant Sanctuary."},
+                {"name": "Govinda's", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Govinda's (Panaji, Ingolem)."},
+                {"name": "Dona Paula Bay", "lat": null, "lng": null, "time": "02:30 PM", "description": "Relax at Dona Paula Bay or Miramar Beach."},
+                {"name": "The Kitchen at Infantaria", "lat": null, "lng": null, "time": "07:00 PM", "description": "Enjoy dinner at The Kitchen at Infantaria (Fontainhas, Panjim)."}
+            ],
+            day6: [
+                {"name": "Artjuna Cafe", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with breakfast at Artjuna Cafe (Ashvem, Bardez)."},
+                {"name": "Dudhsagar Trek", "lat": null, "lng": null, "time": "10:00 AM", "description": "Embark on a Dudhsagar Trek or explore the Netravali Wildlife Sanctuary."},
+                {"name": "Santosh Restaurant", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Santosh Restaurant (Cavelossim, Salcette)."},
+                {"name": "Betalbatim Beach", "lat": null, "lng": null, "time": "02:30 PM", "description": "Relax at Betalbatim Beach or Benaulim Beach."},
+                {"name": "Fisherman's Wharf II", "lat": null, "lng": null, "time": "07:00 PM", "description": "Have dinner at Fisherman's Wharf II (River Mandovi, Panjim)."}
+            ],
+            day7: [
+                {"name": "Artjuna Cafe", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin your day with breakfast at Artjuna Cafe (Ashvem, Bardez)."},
+                {"name": "Grand Island", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Grand Island or relax at Palolem Beach."},
+                {"name": "Ruchira", "lat": null, "lng": null, "time": "01:00 PM", "description": "Enjoy lunch at Ruchira (Major Ghat, Salcette)."},
+                {"name": "Calangute Market", "lat": null, "lng": null, "time": "02:30 PM", "description": "Shop at Calangute Market or Mapusa Market."},
+                {"name": "Gunpowder", "lat": null, "lng": null, "time": "07:00 PM", "description": "End your trip with a farewell dinner at Gunpowder (Fort Aguada Road, Sinquerim)."}
+            ]
+ 
+         }
+     };
+     return itineraryData[itinerary][day] || [];
+ }
+ 
+ // Initialize the default view (one day itinerary)
+ document.addEventListener("DOMContentLoaded", function() {
+     oneday();
+ });
+ 
+ // One day itinerary function
+ function oneday() {
+     updateMap('day1', 'onedays');
+ }
+ 
+ // Helper functions for other itineraries
+ function threeone() { updateMap('day1', 'threedays'); }
+ function threetwo() { updateMap('day2', 'threedays'); }
+ function threethree() { updateMap('day3', 'threedays'); }
+ 
+ function fiveone() { updateMap('day1', 'fivedays'); }
+ function fivetwo() { updateMap('day2', 'fivedays'); }
+ function fivethree() { updateMap('day3', 'fivedays'); }
+ function fivefour() { updateMap('day4', 'fivedays'); }
+ function fivefive() { updateMap('day5', 'fivedays'); }
+ 
+ document.getElementById('profile-pic').addEventListener('click', function() {
+             const dropdownMenu = document.getElementById('dropdown-menu');
+             const profileDetails = document.getElementById('profile-details');
+             const settingsMenu = document.getElementById('settings-menu');
+ 
+             if (dropdownMenu.style.display === 'block') {
+                 dropdownMenu.style.display = 'none';
+                 profileDetails.style.display = 'none';
+                 settingsMenu.style.display = 'none';
+             } else {
+                 dropdownMenu.style.display = 'block';
+             }
+         });
+ 
+         document.getElementById('show-profile').addEventListener('click', function(event) {
+             event.stopPropagation();
+             const profileDetails = document.getElementById('profile-details');
+             profileDetails.style.display = profileDetails.style.display === 'block' ? 'none' : 'block';
+         });
+ 
+         document.getElementById('close-profile').addEventListener('click', function() {
+             const profileDetails = document.getElementById('profile-details');
+             profileDetails.style.display = 'none';
+         });
+ 
+         document.getElementById('upload-photo').addEventListener('change', function(event) {
+             const file = event.target.files[0];
+             if (file) {
+                 const reader = new FileReader();
+                 reader.onload = function(e) {
+                     document.getElementById('profile-pic').src = e.target.result;
+                     document.getElementById('profile-summary-pic').src = e.target.result;
+                     document.getElementById('profile-details-pic').src = e.target.result;
+                 }
+                 reader.readAsDataURL(file);
+             }
+         });
+ 
+         document.querySelector('#settings-icon').addEventListener('click', function() {
+             const settingsMenu = document.getElementById('settings-menu');
+             settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+         });
+ 
+         document.getElementById('close-settings').addEventListener('click', function() {
+             const settingsMenu = document.getElementById('settings-menu');
+             settingsMenu.style.display = 'none';
+         });
+ 
+         window.onclick = function(event) {
+             const dropdownMenu = document.getElementById('dropdown-menu');
+             const profileDetails = document.getElementById('profile-details');
+             const settingsMenu = document.getElementById('settings-menu');
+             
+             if (!event.target.matches('#profile-pic') && !event.target.closest('.dropdown-menu')) {
+                 dropdownMenu.style.display = 'none';
+                 profileDetails.style.display = 'none';
+                 settingsMenu.style.display = 'none';
+             }
+         };
+     </script>
+</body>
+</html>

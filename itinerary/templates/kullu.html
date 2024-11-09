@@ -1,0 +1,715 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullu Itinerary</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+         body.night-mode {
+            background: radial-gradient(ellipse at top, #1b2735 0%, #090a0f 100%);;
+            color: #f5f5f5;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px;
+}
+
+.left-section {
+    flex: 2; /* More space for the itinerary and image */
+    display: flex;
+    flex-direction: column;
+}
+
+.right-section {
+    flex: 1; /* Less space for the map */
+}
+
+#map { 
+    height: 500px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px; /* Ensures gap between map and buttons */
+}
+
+a.buttn {
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none; /* Remove underline */
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+a.buttn:hover {
+    background-color: #444;
+}
+
+.buttons-container {
+    display: flex; /* Use flexbox to align items */
+    justify-content: center; /* Center the buttons */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px; /* Space above the buttons (if needed) */
+}
+
+.photo {
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.details {
+    margin-top: 20px;
+}
+
+.details h2, .details p {
+    margin-bottom: 10px;
+}
+
+.scroll-box {
+    max-height: 300px;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+
+
+/* Style for numbered markers */
+.leaflet-div-icon {
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 24px;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.tab-titles {
+    display: flex;
+    margin: 20px 0 40px;
+    transition: transform 0.5s;   
+}
+
+.tab-links {
+    margin-right: 50px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    transition: transform 0.5s;
+}
+
+.tab-links:hover {
+    color:#E1D14E;
+    transform: translateY(-5px);
+}
+
+.tab-links::after {
+    content: '';
+    width:0;
+    height: 3px;
+    color:#E1D14E;
+    background: #ff004f;
+    position:absolute;
+    left: 0;
+    bottom: -8px;
+    transition: 0.5s;
+}
+
+.tab-links.active-link::after {
+    width: 100%;
+}
+.tab-contents {
+    display: none;
+}
+
+.tab-contents.active-tab {
+    display: block;
+}
+/* Footer Styles */
+.footer {
+    background-color: #090a0f;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+    </style>
+</head>
+
+<body class="night-mode">
+    <div class="container">
+        <!-- Left section for photo and itinerary -->
+        <div class="left-section">
+            <h1>Kullu Itinerary</h1>
+
+            <img src="{% static 'video/kullu.jpg' %}" alt="Golden Temple" class="photo">
+
+            <!-- Scrollable itinerary section -->
+            <div class="about-col-2">
+                <div class="tab-titles">
+                    <p class="tab-links active-link" onclick="opentab(event, 'onedays'),oneday()">ONE DAY Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'threedays')">THREE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'fivedays')">FIVE DAYS Itinerary</p>
+                    <p class="tab-links" onclick="opentab(event, 'sevendays')">SEVEN DAYS Itinerary</p>
+                </div>
+                <div class="tab-contents active-tab" id="onedays">
+                    <div class="scroll-box"> 
+                        <div class="details">
+                            <h2>Day 1 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Begin your day with a hearty breakfast at <em>Sagar Ratna</em> restaurant, famous for its Parathas and Lassi.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Raghunath Temple</em>, an ancient Hindu temple dedicated to Lord Raghunath. Spend some time exploring the intricately carved idols and peaceful surroundings.</p>
+                            <p><strong>1:00 PM:</strong> Savor a traditional Himachal Pradesh lunch at <em>The Himalayan Kitchen</em>, located near the temple. Try their Thukpa, a Tibetan noodle soup, or their Chana Masala.</p>
+                            <p><strong>2:30 PM:</strong> Head to <em>Bajeshwar Mahadev Temple</em>, approximately 15 minutes from Kullu town. This beautiful temple is nestled among lush green trees and offers stunning views of the Parvati Valley.</p>
+                            <p><strong>4:00 PM:</strong> Spend some time relaxing by the <em>River Beas</em>. You can take a leisurely stroll along the riverbank or enjoy a picnic.</p>
+                            <p><strong>7:00 PM:</strong> Conclude your day with an authentic Indian dinner at <em>Gautam Palace</em>, known for its delicious curries and biryanis. Don't miss out on trying their local apple dessert!</p>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="threedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'threedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'threedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'threedays')">Day 3</p>
+                    </div>
+                    <div class="scroll-box">
+                        <div class="details" id="day1-threedays">
+                            <h2>Day 1 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Start your day with a hearty breakfast at <em>Apple Pie Bakery</em> (famous for its pancakes and parathas).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Raghunath Temple</em> and explore its intricate carvings.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Sitara Restaurant</em> (try their local Himachali dishes).</p>
+                            <p><strong>2:30 PM:</strong> Trek to the serene <em>Malana Village</em> or visit <em>Baijnath Temple</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Himalayan Kitchen</em> (enjoy North Indian and continental dishes).</p>                            
+                        </div>
+                        <div class="details" id="day2-threedays" style="display: none;">
+                            <h2>Day 2 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Dey's Diner</em> (known for their momos and thukpa).</p>
+                            <p><strong>10:00 AM:</strong> Explore the scenic <em>Tirthan Valley</em>, known for its beautiful landscapes.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Log Hut</em> (traditional Himachali cuisine in a rustic setting).</p>
+                            <p><strong>2:30 PM:</strong> Visit <em>Parvati Valley</em> or take a dip in the natural hot springs at <em>Vashisht</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Shiva Cafe & Bakery</em> (delicious pizzas and pastas).</p>
+                        </div>
+                        <div class="details" id="day3-threedays" style="display: none;">
+                            <h2>Day 3 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>The Cinnamon</em> (try their apple cinnamon waffles).</p>
+                            <p><strong>10:00 AM:</strong> Spend the morning at <em>Kheerganga</em>, a beautiful meadow with natural hot springs.</p>
+                            <p><strong>1:00 PM:</strong> Packed lunch during the trek to Kheerganga.</p>
+                            <p><strong>2:30 PM:</strong> Return to Kullu and explore local markets for souvenirs.</p>
+                            <p><strong>7:00 PM:</strong> Farewell dinner at <em>The Old Manual Press</em> (a charming cafe serving Indian and European dishes).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-contents" id="fivedays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'fivedays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'fivedays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'fivedays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'fivedays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'fivedays')">Day 5</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-fivedays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Apple Pie Bakery</em> (popular local restaurant).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Raghunath Temple</em> and <em>Parvati Agora</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Himalayan Kitchen</em> (traditional dishes).</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Bajeshwar Mahadev Temple</em> and <em>Sofa Meadows</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Old Manali Restaurant & Cafe</em>.</p>
+                        </div>
+                        <div class="details" id="day2-fivedays" style="display: none;"> <!-- Hide other days by default -->
+                            <h2>Day 2 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Café Log Hut</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Jana Fall</em> and <em>Chenchoola Fort</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Shikhar Da Dhaba</em> (local cuisine).</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Kasol</em> and <em>Tosh</em> villages.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Moon Dance Cafe</em>.</p>
+                        </div>
+                        <div class="details" id="day3-fivedays" style="display: none;">
+                            <h2>Day 3 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Mojo's Himalayan Cafe</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Malana Village</em> and <em>Chalal Valley</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Siddhartha Cafe</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Solang Valley</em> and <em>Nehru Kund</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Floating Cafe on River Beas</em>.</p>
+                        </div>
+                        <div class="details" id="day4-fivedays" style="display: none;">
+                            <h2>Day 4 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Pink Floyd Israeli Restaurant</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Tirthan Valley</em> and <em>Serolsar Lake</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>The Hungry Traveller</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Malana Hot Springs</em> and <em>Friendship Peak</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Shiva Cafe</em>.</p>
+                        </div>
+                        <div class="details" id="day5-fivedays" style="display: none;">
+                            <h2>Day 5 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Cafe 1947</em>.</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Rafting Point</em> and trek to <em>Chikara Waterfall</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Evergreen Restaurant</em>.</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Manikaran Sahib</em> and <em>Vashist Temple</em>.</p>
+                            <p><strong>7:00 PM:</strong> Farewell dinner at <em>German Bakery</em>.</p>
+                        </div>
+                    </div>
+                </div>                
+                <div class="tab-contents" id="sevendays">
+                    <div class="day-tabs">
+                        <p class="tab-links active-link" onclick="openday(event, 'day1', 'sevendays')">Day 1</p>
+                        <p class="tab-links" onclick="openday(event, 'day2', 'sevendays')">Day 2</p>
+                        <p class="tab-links" onclick="openday(event, 'day3', 'sevendays')">Day 3</p>
+                        <p class="tab-links" onclick="openday(event, 'day4', 'sevendays')">Day 4</p>
+                        <p class="tab-links" onclick="openday(event, 'day5', 'sevendays')">Day 5</p>
+                        <p class="tab-links" onclick="openday(event, 'day6', 'sevendays')">Day 6</p>
+                        <p class="tab-links" onclick="openday(event, 'day7', 'sevendays')">Day 7</p>
+                    </div>
+                    <div class="scroll-box"> 
+                        <div class="details" id="day1-sevendays" style="display: block;"> <!-- Show Day 1 by default -->
+                            <h2>Day 1 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Shikhar Da Dhaba</em> (popular for Parathas and Chai).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Raghunath Temple</em> and <em>Bajeshwar Mahadev Temple</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Himalayan Spice</em> (traditional Indian dishes).</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Tibetan Market</em> for shopping and visit <em>Baijnath Temple</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Old Manual Press</em> (famous for Kullu trout and other European dishes).</p>
+                        </div>
+                        <div class="details" id="day2-sevendays" style="display: none;">
+                            <h2>Day 2 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Cafe de Himachal</em> (offers a variety of Indian and continental dishes).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Fort Ruins of Rampur Bushahr</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Parikshit Restaurant</em> (known for its authentic Himachali food).</p>
+                            <p><strong>2:30 PM:</strong> Explore <em>Larji Falls</em> and trek to <em>Malana Village</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Siddhartha's Organic Farm & Retreat</em> (enjoy organic farm-to-table meals).</p>
+                        </div>
+                        <div class="details" id="day3-sevendays" style="display: none;">                      
+                            <h2>Day 3 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Tiki-Toos</em> (pancakes, waffles, and eggs).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Pandoh Dam</em> and <em>Pandoh Lake</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Apple Farm</em> (traditional Himachali Thalis).</p>
+                            <p><strong>2:30 PM:</strong> Trek to <em>Mala Hill</em> or explore nearby villages.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Gaddi Dhaba</em> (try their famous Chicken and Mutton dishes).</p>
+                        </div>
+                        <div class="details" id="day4-sevendays" style="display: none;">
+                            <h2>Day 4 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Café Himalaya</em> (offering various breakfast options).</p>
+                            <p><strong>10:00 AM:</strong> Visit the beautiful <em>Chandrakhani Pass</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>The Blue Bird</em> (try their famous Sandwiches and Momos).</p>
+                            <p><strong>2:30 PM:</strong> Trek to <em>Saraswati Temple</em> or relax at <em>Tirthan Valley</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>Arjun's Cafe</em> (traditional Himachali cuisine).</p>
+                            
+                        </div>
+                        <div class="details" id="day5-sevendays" style="display: none;">
+                            <h2>Day 5 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>The Birch & The Bee</em> (offering European and Asian dishes).</p>
+                            <p><strong>10:00 AM:</strong> Visit the beautiful <em>Temples of Kasol</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Evergreen Restaurant</em> (try their local delicacies).</p>
+                            <p><strong>2:30 PM:</strong> Explore the <em>Parvati Valley</em> or trek to <em>Kheerganga</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Holistic Healing</em> (vegetarian and vegan options available).</p>
+                        </div>
+                        <div class="details" id="day6-sevendays" style="display: none;">
+                            <h2>Day 6 in Kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Kuntzum Cafe</em> (offering a variety of pancakes and eggs).</p>
+                            <p><strong>10:00 AM:</strong> Visit <em>Malana Waterfall</em> and explore <em>Malana village</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at <em>Sita Panja Restaurant</em> (try their Rajma Chawal).</p>
+                            <p><strong>2:30 PM:</strong> Relax at <em>Tattapani Hot Springs</em> or explore <em>Jibhi</em>.</p>
+                            <p><strong>7:00 PM:</strong> Dinner at <em>The Meadow</em> (enjoying a beautiful view while dining).</p>
+                        </div>
+                        <div class="details" id="day7-sevendays" style="display: none;">
+                            <h2>Day 7 in kullu:</h2>
+                            <p><strong>8:00 AM:</strong> Breakfast at <em>Friends Cafe</em> (offering a range of breads and spreads).</p>
+                            <p><strong>10:00 AM:</strong> Visit the beautiful <em>Chikkar Taal</em> and <em>Chanshal Sanctuary</em>.</p>
+                            <p><strong>1:00 PM:</strong> Lunch at the <em>River View Cafe</em> (try their Thukpa and Momos).</p>
+                            <p><strong>2:30 PM:</strong> Explore the nearby villages and enjoy some shopping.</p>
+                            <p><strong>7:00 PM:</strong> Farewell dinner at <em>The Great Himalayan National Park Restaurant</em> (enjoying a panoramic view).</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Right section for map -->
+        <div class="right-section">
+            <div id="map"></div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; Voyage Verse - 2024</p>
+    </footer>
+    
+
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+    
+        <script>
+    // Global variable to store the current map instance
+    let currentMap;
+    let darkModeLayer;
+    let lightModeLayer;
+    
+    // Night Mode Toggle
+    function toggleNightMode() {
+        const body = document.body;
+        const modeIcon = document.getElementById('modeIcon');
+        
+        // Toggle between day and night modes
+        body.classList.toggle('day-mode');
+        body.classList.toggle('night-mode');
+        
+        // Switch the map layers
+        if (body.classList.contains('day-mode')) {
+            map.removeLayer(darkModeLayer);
+            map.addLayer(lightModeLayer);
+            modeIcon.textContent = '☀️'; // Day mode icon
+        } else {
+            map.removeLayer(lightModeLayer);
+            map.addLayer(darkModeLayer);
+            modeIcon.textContent = '🌙'; // Night mode icon
+        }
+    }
+    
+    // Function to switch between main itinerary tabs
+    function opentab(event, tabname) {
+        const tabcontents = document.getElementsByClassName("tab-contents");
+        const tablinks = document.getElementsByClassName("tab-links");
+    
+        // Hide all tab contents and remove active class from all tab links
+        for (let content of tabcontents) {
+            content.classList.remove("active-tab");
+        }
+        for (let link of tablinks) {
+            link.classList.remove("active-link");
+        }
+    
+        // Show the selected tab content and mark the clicked tab as active
+        document.getElementById(tabname).classList.add("active-tab");
+        event.currentTarget.classList.add("active-link");
+    
+        // Call the appropriate function based on the selected tab
+        switch(tabname) {
+            case "onedays":
+                oneday();
+                break;
+            case "threedays":
+                openday(event, 'day1', 'threedays');
+                break;
+            case "fivedays":
+                openday(event, 'day1', 'fivedays');
+                break;
+            case "sevendays":
+                openday(event, 'day1', 'sevendays');
+                break;
+        }
+    }
+    
+    // Function to switch between days for multi-day itineraries
+    function openday(event, day, itinerary) {
+        const details = document.querySelectorAll(`#${itinerary} .details`);
+        const dayTabs = document.querySelectorAll(`#${itinerary} .day-tabs .tab-links`);
+    
+        // Hide all day contents and remove active class from all day tabs
+        for (let detail of details) {
+            detail.style.display = "none";
+        }
+        for (let tab of dayTabs) {
+            tab.classList.remove("active-link");
+        }
+    
+        // Show the selected day's content and mark the clicked day tab as active
+        document.getElementById(`${day}-${itinerary}`).style.display = "block";
+        event.currentTarget.classList.add("active-link");
+    
+        // Update the map based on the selected day and itinerary
+        updateMap(day, itinerary);
+    }
+    
+    // Function to update the map based on the selected day and itinerary
+    function updateMap(day, itinerary) {
+        // Clear the existing map
+        if (currentMap) {
+            currentMap.remove();
+        }
+    
+        // Create a new map instance
+        currentMap = L.map('map', {
+            attributionControl: false
+        });
+    
+        // Add the tile layer (dark mode by default)
+        darkModeLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        }).addTo(currentMap);
+    
+        // Get the places data for the selected day and itinerary
+        const places = getPlacesData(day, itinerary);
+    
+        // Add markers and create the route
+        let bounds = L.latLngBounds();
+        let coordinates = [];
+    
+        places.forEach((place, index) => {
+            const marker = L.marker([place.lat, place.lng], {
+                icon: L.divIcon({
+                    className: 'leaflet-div-icon',
+                    html: (index + 1)
+                })
+            }).addTo(currentMap);
+    
+            marker.bindPopup(`
+                <strong>${place.time}: ${place.name}</strong><br>
+                ${place.description}<br>
+                <a href="https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}" target="_blank">Go to Google Maps</a>
+            `);
+    
+            coordinates.push([place.lat, place.lng]);
+            bounds.extend([place.lat, place.lng]);
+        });
+    
+        // Add polyline connecting the places
+        L.polyline(coordinates, { color: 'blue', weight: 3 }).addTo(currentMap);
+    
+        // Fit the map to show all markers
+        currentMap.fitBounds(bounds);
+    }
+    
+    // Function to get places data based on the selected day and itinerary
+    function getPlacesData(day, itinerary) {
+        const itineraryData = {
+            onedays: {
+                day1: [
+                    {"name": "Sagar Ratna", "lat": null, "lng": null, "time": "08:00 AM", "description": "Begin your day with a hearty breakfast at Sagar Ratna restaurant, famous for its Parathas and Lassi."},
+                    {"name": "Raghunath Temple", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Raghunath Temple, an ancient Hindu temple dedicated to Lord Raghunath. Spend some time exploring the intricately carved idols and peaceful surroundings."},
+                    {"name": "The Himalayan Kitchen", "lat": null, "lng": null, "time": "01:00 PM", "description": "Savor a traditional Himachal Pradesh lunch at The Himalayan Kitchen, located near the temple. Try their Thukpa, a Tibetan noodle soup, or their Chana Masala."},
+                    {"name": "Bajeshwar Mahadev Temple", "lat": null, "lng": null, "time": "02:30 PM", "description": "Head to Bajeshwar Mahadev Temple, approximately 15 minutes from Kullu town. This beautiful temple is nestled among lush green trees and offers stunning views of the Parvati Valley."},
+                    {"name": "River Beas", "lat": null, "lng": null, "time": "04:00 PM", "description": "Spend some time relaxing by the River Beas. You can take a leisurely stroll along the riverbank or enjoy a picnic."},
+                    {"name": "Gautam Palace", "lat": null, "lng": null, "time": "07:00 PM", "description": "Conclude your day with an authentic Indian dinner at Gautam Palace, known for its delicious curries and biryanis. Don't miss out on trying their local apple dessert!"}
+                ],
+            },
+            threedays: {
+                day1: [
+                    {"name": "Apple Pie Bakery", "lat": null, "lng": null, "time": "08:00 AM", "description": "Start your day with a hearty breakfast at Apple Pie Bakery, famous for its pancakes and parathas."},
+                    {"name": "Raghunath Temple", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Raghunath Temple and explore its intricate carvings."},
+                    {"name": "Sitara Restaurant", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Sitara Restaurant, try their local Himachali dishes."},
+                    {"name": "Malana Village", "lat": null, "lng": null, "time": "02:30 PM", "description": "Trek to the serene Malana Village or visit Baijnath Temple."},
+                    {"name": "The Himalayan Kitchen", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Himalayan Kitchen, enjoy North Indian and continental dishes."}
+                ],
+                day2: [
+                    {"name": "Dey's Diner", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Dey's Diner, known for their momos and thukpa."},
+                    {"name": "Tirthan Valley", "lat": null, "lng": null, "time": "10:00 AM", "description": "Explore the scenic Tirthan Valley, known for its beautiful landscapes."},
+                    {"name": "Log Hut", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Log Hut, traditional Himachali cuisine in a rustic setting."},
+                    {"name": "Parvati Valley", "lat": null, "lng": null, "time": "02:30 PM", "description": "Visit Parvati Valley or take a dip in the natural hot springs at Vashisht."},
+                    {"name": "Shiva Cafe & Bakery", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Shiva Cafe & Bakery, delicious pizzas and pastas."}
+                ],
+                day3: [
+                    {"name": "The Cinnamon", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at The Cinnamon, try their apple cinnamon waffles."},
+                    {"name": "Kheerganga", "lat": null, "lng": null, "time": "10:00 AM", "description": "Spend the morning at Kheerganga, a beautiful meadow with natural hot springs."},
+                    {"name": "Packed Lunch", "lat": null, "lng": null, "time": "01:00 PM", "description": "Packed lunch during the trek to Kheerganga."},
+                    {"name": "Local Markets", "lat": null, "lng": null, "time": "02:30 PM", "description": "Return to Kullu and explore local markets for souvenirs."},
+                    {"name": "The Old Manual Press", "lat": null, "lng": null, "time": "07:00 PM", "description": "Farewell dinner at The Old Manual Press, a charming cafe serving Indian and European dishes."}
+                ],
+            },
+            fivedays: {
+                day1: [
+                    {"name": "Apple Pie Bakery", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Apple Pie Bakery, popular local restaurant."},
+                    {"name": "Raghunath Temple", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Raghunath Temple and Parvati Agora."},
+                    {"name": "Himalayan Kitchen", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Himalayan Kitchen, traditional dishes."},
+                    {"name": "Bajeshwar Mahadev Temple", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Bajeshwar Mahadev Temple and Sofa Meadows."},
+                    {"name": "The Old Manali Restaurant & Cafe", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Old Manali Restaurant & Cafe."}
+                ],
+                day2: [
+                    {"name": "Café Log Hut", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Café Log Hut."},
+                    {"name": "Jana Fall", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Jana Fall and Chenchoola Fort."},
+                    {"name": "Shikhar Da Dhaba", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Shikhar Da Dhaba, local cuisine."},
+                    {"name": "Kasol", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Kasol and Tosh villages."},
+                    {"name": "Moon Dance Cafe", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Moon Dance Cafe."}
+                ],
+                day3: [
+                    {"name": "Mojo's Himalayan Cafe", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Mojo's Himalayan Cafe."},
+                    {"name": "Malana Village", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Malana Village and Chalal Valley."},
+                    {"name": "Siddhartha Cafe", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Siddhartha Cafe."},
+                    {"name": "Solang Valley", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Solang Valley and Nehru Kund."},
+                    {"name": "Floating Cafe on River Beas", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Floating Cafe on River Beas."}
+                ],
+                day4: [
+                    {"name": "Pink Floyd Israeli Restaurant", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Pink Floyd Israeli Restaurant."},
+                    {"name": "Tirthan Valley", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Tirthan Valley and Serolsar Lake."},
+                    {"name": "The Hungry Traveller", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at The Hungry Traveller."},
+                    {"name": "Malana Hot Springs", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Malana Hot Springs and Friendship Peak."},
+                    {"name": "Shiva Cafe", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Shiva Cafe."}
+                ],
+                day5: [
+                    {"name": "Cafe 1947", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Cafe 1947."},
+                    {"name": "Rafting Point", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Rafting Point and trek to Chikara Waterfall."},
+                    {"name": "Evergreen Restaurant", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Evergreen Restaurant."},
+                    {"name": "Manikaran Sahib", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Manikaran Sahib and Vashist Temple."},
+                    {"name": "German Bakery", "lat": null, "lng": null, "time": "07:00 PM", "description": "Farewell dinner at German Bakery."}
+                ]
+    
+            },
+            sevendays: {
+                day1: [
+                    {"name": "Shikhar Da Dhaba", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Shikhar Da Dhaba, popular for Parathas and Chai."},
+                    {"name": "Raghunath Temple", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Raghunath Temple and Bajeshwar Mahadev Temple."},
+                    {"name": "Himalayan Spice", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Himalayan Spice, traditional Indian dishes."},
+                    {"name": "Tibetan Market", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Tibetan Market for shopping and visit Baijnath Temple."},
+                    {"name": "The Old Manual Press", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Old Manual Press, famous for Kullu trout and other European dishes."}
+                ],
+                day2: [
+                    {"name": "Cafe de Himachal", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Cafe de Himachal, offers a variety of Indian and continental dishes."},
+                    {"name": "Fort Ruins of Rampur Bushahr", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Fort Ruins of Rampur Bushahr."},
+                    {"name": "Parikshit Restaurant", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Parikshit Restaurant, known for its authentic Himachali food."},
+                    {"name": "Larji Falls", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore Larji Falls and trek to Malana Village."},
+                    {"name": "Siddhartha's Organic Farm & Retreat", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Siddhartha's Organic Farm & Retreat, enjoy organic farm-to-table meals."}
+                ],
+                day3: [
+                    {"name": "Tiki-Toos", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Tiki-Toos, pancakes, waffles, and eggs."},
+                    {"name": "Pandoh Dam", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Pandoh Dam and Pandoh Lake."},
+                    {"name": "Apple Farm", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Apple Farm, traditional Himachali Thalis."},
+                    {"name": "Mala Hill", "lat": null, "lng": null, "time": "02:30 PM", "description": "Trek to Mala Hill or explore nearby villages."},
+                    {"name": "The Gaddi Dhaba", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Gaddi Dhaba, try their famous Chicken and Mutton dishes."}
+                ],
+                day4: [
+                    {"name": "Café Himalaya", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Café Himalaya, offering various breakfast options."},
+                    {"name": "Chandrakhani Pass", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the beautiful Chandrakhani Pass."},
+                    {"name": "The Blue Bird", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at The Blue Bird, try their famous Sandwiches and Momos."},
+                    {"name": "Saraswati Temple", "lat": null, "lng": null, "time": "02:30 PM", "description": "Trek to Saraswati Temple or relax at Tirthan Valley."},
+                    {"name": "Arjun's Cafe", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at Arjun's Cafe, traditional Himachali cuisine."}
+                ],
+                day5: [
+                    {"name": "The Birch & The Bee", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at The Birch & The Bee, offering European and Asian dishes."},
+                    {"name": "Temples of Kasol", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the beautiful Temples of Kasol."},
+                    {"name": "Evergreen Restaurant", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Evergreen Restaurant, try their local delicacies."},
+                    {"name": "Parvati Valley", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the Parvati Valley or trek to Kheerganga."},
+                    {"name": "The Holistic Healing", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Holistic Healing, vegetarian and vegan options available."}
+                ],
+                day6: [
+                    {"name": "Kuntzum Cafe", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Kuntzum Cafe, offering a variety of pancakes and eggs."},
+                    {"name": "Malana Waterfall", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit Malana Waterfall and explore Malana village."},
+                    {"name": "Sita Panja Restaurant", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at Sita Panja Restaurant, try their Rajma Chawal."},
+                    {"name": "Tattapani Hot Springs", "lat": null, "lng": null, "time": "02:30 PM", "description": "Relax at Tattapani Hot Springs or explore Jibhi."},
+                    {"name": "The Meadow", "lat": null, "lng": null, "time": "07:00 PM", "description": "Dinner at The Meadow, enjoying a beautiful view while dining."}
+                ],
+                day7: [
+                    {"name": "Friends Cafe", "lat": null, "lng": null, "time": "08:00 AM", "description": "Breakfast at Friends Cafe, offering a range of breads and spreads."},
+                    {"name": "Chikkar Taal", "lat": null, "lng": null, "time": "10:00 AM", "description": "Visit the beautiful Chikkar Taal and Chanshal Sanctuary."},
+                    {"name": "River View Cafe", "lat": null, "lng": null, "time": "01:00 PM", "description": "Lunch at River View Cafe, try their Thukpa and Momos."},
+                    {"name": "Nearby Villages", "lat": null, "lng": null, "time": "02:30 PM", "description": "Explore the nearby villages and enjoy some shopping."},
+                    {"name": "The Great Himalayan National Park Restaurant", "lat": null, "lng": null, "time": "07:00 PM", "description": "Farewell dinner at The Great Himalayan National Park Restaurant, enjoying a panoramic view."}
+                ]
+    
+            }
+        };
+        return itineraryData[itinerary][day] || [];
+    }
+    
+    // Initialize the default view (one day itinerary)
+    document.addEventListener("DOMContentLoaded", function() {
+        oneday();
+    });
+    
+    // One day itinerary function
+    function oneday() {
+        updateMap('day1', 'onedays');
+    }
+    
+    // Helper functions for other itineraries
+    function threeone() { updateMap('day1', 'threedays'); }
+    function threetwo() { updateMap('day2', 'threedays'); }
+    function threethree() { updateMap('day3', 'threedays'); }
+    
+    function fiveone() { updateMap('day1', 'fivedays'); }
+    function fivetwo() { updateMap('day2', 'fivedays'); }
+    function fivethree() { updateMap('day3', 'fivedays'); }
+    function fivefour() { updateMap('day4', 'fivedays'); }
+    function fivefive() { updateMap('day5', 'fivedays'); }
+    
+    document.getElementById('profile-pic').addEventListener('click', function() {
+                const dropdownMenu = document.getElementById('dropdown-menu');
+                const profileDetails = document.getElementById('profile-details');
+                const settingsMenu = document.getElementById('settings-menu');
+    
+                if (dropdownMenu.style.display === 'block') {
+                    dropdownMenu.style.display = 'none';
+                    profileDetails.style.display = 'none';
+                    settingsMenu.style.display = 'none';
+                } else {
+                    dropdownMenu.style.display = 'block';
+                }
+            });
+    
+            document.getElementById('show-profile').addEventListener('click', function(event) {
+                event.stopPropagation();
+                const profileDetails = document.getElementById('profile-details');
+                profileDetails.style.display = profileDetails.style.display === 'block' ? 'none' : 'block';
+            });
+    
+            document.getElementById('close-profile').addEventListener('click', function() {
+                const profileDetails = document.getElementById('profile-details');
+                profileDetails.style.display = 'none';
+            });
+    
+            document.getElementById('upload-photo').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profile-pic').src = e.target.result;
+                        document.getElementById('profile-summary-pic').src = e.target.result;
+                        document.getElementById('profile-details-pic').src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+    
+            document.querySelector('#settings-icon').addEventListener('click', function() {
+                const settingsMenu = document.getElementById('settings-menu');
+                settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+            });
+    
+            document.getElementById('close-settings').addEventListener('click', function() {
+                const settingsMenu = document.getElementById('settings-menu');
+                settingsMenu.style.display = 'none';
+            });
+    
+            window.onclick = function(event) {
+                const dropdownMenu = document.getElementById('dropdown-menu');
+                const profileDetails = document.getElementById('profile-details');
+                const settingsMenu = document.getElementById('settings-menu');
+                
+                if (!event.target.matches('#profile-pic') && !event.target.closest('.dropdown-menu')) {
+                    dropdownMenu.style.display = 'none';
+                    profileDetails.style.display = 'none';
+                    settingsMenu.style.display = 'none';
+                }
+            };
+        </script>
+</body>
+</html>
