@@ -71,7 +71,7 @@ To get started with **Voyage Verse**:
 
 1. Clone the repository:
     ```bash
-    git clone [https://github.com/vignesh19032005/Voyage_Verse-GDG.git](https://github.com/vignesh19032005/Voyage_Verse-GDG.git)
+    git clone https://github.com/vignesh19032005/Voyage_Verse-GDG.git
     ```
 
 2. Navigate to the project directory:
