@@ -7,17 +7,16 @@ import urllib
 import google.generativeai as genai
 import re
 
-FOURSQUARE_API_KEY = 'fsq3yvtdrodkSsvpW3y6fQP0IGJJrsxuRFlSwNTwriZXWz0='
-OPENCAGE_API_KEY = 'b579176661e0476d9b4781624e9d0d77'
-GOOGLE_MAPS_API_KEY = 'AIzaSyBJ_RSZJg-_VzDdFRH-pJffj5CN_btq_k'
-NEWS_API_KEY = '9cc4add3803445daa4d68f3906b88d71'
-GOOGLE_API_KEY = 'AIzaSyA5phyiuSfCw565e2W_hBRn_qcYH-PXFaY'
+FOURSQUARE_API_KEY =  #Use your own API Key
+OPENCAGE_API_KEY = #Use your own API Key
+NEWS_API_KEY = #Use your own API Key
+GOOGLE_API_KEY = #Use your own API Key
 FOURSQUARE_ENDPOINT = 'https://api.foursquare.com/v3/places/search'
 OPENCAGE_ENDPOINT = 'https://api.opencagedata.com/geocode/v1/json'
 NEWS_API_ENDPOINT = 'https://newsapi.org/v2/everything'
 
 
-genai.configure(api_key=GOOGLE_API_KEY)x
+genai.configure(api_key=GOOGLE_API_KEY)
 
 BUDGET_PREFERENCES = ["Low", "Medium", "High", "Luxury"]
 
