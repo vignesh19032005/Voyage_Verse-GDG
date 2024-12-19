@@ -121,6 +121,3 @@ vigneshhariraj@gmail.com,
 shailesh.ashok2020@gmail.com
 
 
-https://www.linkedin.com/in/voyageverse/
-voyageverse.cerebrox@gmail.com
-
