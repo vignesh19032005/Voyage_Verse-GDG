@@ -40,30 +40,6 @@
 
 ---
 
-## **How It Works**
-
-- **Architecture Overview**: 
-![Flowchart_MAP](https://github.com/user-attachments/assets/3587e8e3-1c1f-4c44-bd34-566a049214a6)
-
-- **Home Page**:  
-![home](https://github.com/user-attachments/assets/59ffb144-bdb7-428a-a7f8-7f1260fed471)
-
-- **Signup page**:  
-![signup](https://github.com/user-attachments/assets/443379d1-7288-45c1-8503-e4837fcd9453)
-
-
-- **Login Page**:  
-![login](https://github.com/user-attachments/assets/bf858a79-368b-4a95-a62e-6530747756af)
-
-  
-- **Sample for Modal Input**:  
-![input](https://github.com/user-attachments/assets/87b753a7-29b5-4a13-90f3-8282c67dc988)
-
-
-- **Top Destinations**:  
-![top 6 destinations](https://github.com/user-attachments/assets/e264a8c5-869d-4d74-9e85-8ff93f276a87)
-
----
 
 ## **Usage**
 
@@ -105,13 +81,6 @@ To get started with **Voyage Verse**:
   - ![Gemini](https://img.shields.io/badge/Gemini-%23336E7B.svg?style=for-the-badge&logo=google&logoColor=white) 
 
 ---
-
-## **Output**
-
-The personalized itinerary is provided to users via a beautifully crafted. Here’s an example of what you can expect:
-![image](https://github.com/user-attachments/assets/4a8ae21f-1893-4335-a018-6c3f48bf1a82)
-
-
 
 ## Contact Us
 
