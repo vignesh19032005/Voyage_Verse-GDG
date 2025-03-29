@@ -385,7 +385,7 @@ def is_itinerary_request(user_input):
     return any(re.search(rf'\b{word}\b', user_input.lower()) for word in itinerary_keywords)
 
 def travel_chatbot(user_input):
-    genai.configure(api_key='AIzaSyA5phyiuSfCw565e2W_hBRn_qcYH-PXFaY')
+    genai.configure(api_key='YOUR_API_KEY')
 
     model = genai.GenerativeModel(model_name='gemini-1.5-flash')
     
